@@ -19,7 +19,7 @@ class Choice(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name='choice')
 
     def __str__(self):
-        return f"choice of poll: {self.poll}"
+        return self.choicetext
 
 
 class Vote(models.Model):
