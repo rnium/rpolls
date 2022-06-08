@@ -155,7 +155,6 @@
                 </div>
             </div>
         </div>
-        <!-- main part of the page -->
         <div class="right-col">
             <div class="poll-detail">
                 <div class="content">
@@ -185,10 +184,13 @@
                                     <span class="label">created by:&nbsp;</span><span class="user">{{ poll_author }}</span>
                                 </li>
                                 <li>
-                                    <span class="label">created at:&nbsp;</span><span class="value">{{ poll_added }}</span>
+                                    <span class="label">created at:&nbsp;</span><span class="value">{{ poll_added|date:"h:i A, j M o"  }}</span>
                                 </li>
                                 <li>
                                     <span class="label">total votes:&nbsp;</span><span class="value">{{ total_votes }}</span>
+                                </li>
+                                <li>
+                                    <span class="label">total views:&nbsp;</span><span class="value">{{ poll_views }}</span>
                                 </li>
                                 {% if my_vote_time %}
                                 <li>

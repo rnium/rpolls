@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from polls.models import (Poll, Choice, Vote)
 from forums.models import (ForumTopic, Post)
 from django.urls import reverse
 
 def homepageview(request):
+    # if request.user.is_authenticated:
+    #     return redirect('polls:index')
     return render(request, 'polls/home.html')
 
 
@@ -83,29 +85,36 @@ def pollshomepage(request):
                                     'has_prev': has_prev, 'has_next': has_next, 'next_page_num': next_page_num, 'prev_page_num': prev_page_num} 
 
     #user stats panel
-    userCreatedPolls = Poll.objects.filter(author=request.user)
-    user_created_active_polls = Poll.objects.filter(author=request.user, active=True).count()
-    recentPoll = Poll.objects.filter(author=request.user).order_by('-added')[0]
-    recent_poll_id = recentPoll.id
-    recent_poll_title = recentPoll.title
-    user_created_poll_nums = userCreatedPolls.count()
-    user_vote_gain = 0
-    for userpoll in userCreatedPolls:
-        poll_votes = userpoll.pollvote.count()
-        user_vote_gain += poll_votes
-    userVotes = Vote.objects.filter(voter=request.user).order_by('-vote_time')
-    users_vote_count = userVotes.count()
-    userLastVote = userVotes[0]
-    user_last_vote_time = userLastVote.vote_time
-    user_last_vote_poll_id = userLastVote.poll.id
-    user_last_vote_poll_title = userLastVote.poll.title
-
-
-    stat_context = {'user_vote_gain': user_vote_gain, 'user_created_poll_nums': user_created_poll_nums, 
-        'user_created_active_polls': user_created_active_polls, 'recent_poll_id': recent_poll_id,
-        'recent_poll_title': recent_poll_title, 'users_vote_count': users_vote_count,
-        'user_last_vote_time':user_last_vote_time, 'user_last_vote_poll_id':user_last_vote_poll_id,
-        'user_last_vote_poll_title':user_last_vote_poll_title}
+    stat_context = dict()
+    try:
+        userCreatedPolls = Poll.objects.filter(author=request.user)
+        user_vote_gain = 0
+        for userpoll in userCreatedPolls:
+            pollVotes = userpoll.pollvote.count()
+            user_vote_gain += pollVotes
+        stat_context['user_vote_gain'] = user_vote_gain
+    except:
+        pass
+    try:
+        stat_context['user_created_active_polls'] = Poll.objects.filter(author=request.user, active=True).count()
+        stat_context['user_created_poll_nums'] = userCreatedPolls.count()
+    except:
+        pass
+    try:
+        recentPoll = Poll.objects.filter(author=request.user).order_by('-added')[0]
+        stat_context['recent_poll_id'] = recentPoll.id
+        stat_context['recent_poll_title'] = recentPoll.title
+    except:
+        pass  
+    try:
+        userVotes = Vote.objects.filter(voter=request.user).order_by('-vote_time')
+        stat_context['users_vote_count'] = userVotes.count()
+        userLastVote = userVotes[0]
+        stat_context['user_last_vote_time'] = userLastVote.vote_time
+        stat_context['user_last_vote_poll_id'] = userLastVote.poll.id
+        stat_context['user_last_vote_poll_title'] = userLastVote.poll.title
+    except:
+        pass
 
     return render(request, 'polls/index.html', context={'recentpolls': recentpolls_context, 'forums': recentforums_context, 
                                                         'recentpolls_user': recentpolls_user_context,
@@ -117,11 +126,14 @@ def polldetail(request, pk):
     polldetail_context['polls_panel_context'] = get_polls_panel_context(request)
     polldetail_context['forum_panel_context'] = get_forum_panel_context(request)
     poll = Poll.objects.get(pk=pk)
+    pollViews = poll.views + 1
+    Poll.objects.filter(pk=pk).update(views=pollViews)
     polldetail_context['poll_id'] = poll.id
     polldetail_context['poll_url'] = request.build_absolute_uri()
     polldetail_context['poll_title'] = poll.title
     polldetail_context['poll_author'] = poll.author
     polldetail_context['poll_added'] = poll.added
+    polldetail_context['poll_views'] = pollViews
     polldetail_context['is_active_poll'] = poll.active
     if poll.active:
         polldetail_context['active_status'] = 'active'

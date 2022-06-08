@@ -8,7 +8,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="icon" href="{% static 'images/r.png' %}">
-    <title>Homepage</title>
+    <title>rPolls:Home</title>
 </head>
 <body>
     <header>
@@ -67,7 +67,7 @@
                 <div class="content">
                     {% for poll in recentpolls %}
                     <div class="poll-item">
-                        <a class="poll-title" href="#">{{ poll.poll_title }}</a>
+                        <a class="poll-title" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>
                         <div class="count">
                             <span class="label">vote count:&nbsp;</span><span class="value">{{ poll.vote_count }}</span>
                         </div>
@@ -114,7 +114,7 @@
                     {% for poll in recentpolls_user %}
                     <div class="poll-item">
                         <div class="title">
-                            <i class="bi bi-node-plus me-1"></i><a href="#">{{ poll.poll_title }}</a>
+                            <i class="bi bi-node-plus me-1"></i><a href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>
                         </div>
                         <div class="stat">
                             <div class="views si">
@@ -182,7 +182,11 @@
                             </div>
                             <div class="s-item">
                                 <span class="label">most recent poll:&nbsp;</span>
-                                <span class="value"><a href="#">{{ stat.recent_poll_title }}</a></span>
+                                {% if stat.recent_poll_id %}
+                                <span class="value"><a href="{% url 'polls:polldetails' stat.recent_poll_id %}">{{ stat.recent_poll_title }}</a></span>
+                                {% else %}
+                                <span class="value">no poll</span>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="stat-right-col">
@@ -192,11 +196,15 @@
                             </div>
                             <div class="s-item">
                                 <span class="label">my last vote:&nbsp;</span>
-                                <span class="value"><a href="#">{{ stat.user_last_vote_poll_title }}</a></span>
+                                {% if stat.user_last_vote_poll_id %}
+                                <span class="value"><a href="{% url 'polls:polldetails' stat.user_last_vote_poll_id %}">{{ stat.user_last_vote_poll_title }}</a></span>
+                                {% else %}
+                                <span class="value">no vote</span>
+                                {% endif %}
                             </div>
                             <div class="s-item">
                                 <span class="label">last vote time:&nbsp;</span>
-                                <span class="value">{{ stat.user_last_vote_time|date:"h:i A, j M o" }}</span>
+                                <span class="value">{{ stat.user_last_vote_time|date:"h:i A, j M o"|default:'N/A' }}</span>
                             </div>
                         </div>
                     </div>

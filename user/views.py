@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import (login, authenticate, logout)
@@ -23,7 +23,8 @@ def register(request):
                                                                     'password2': password2})
             user.set_password(password1)
             user.save()
-            return  HttpResponse('success')
+            login(request, user)
+            return redirect('polls:index')
         else:
             return render(request, 'user/register.html', context={'error': 'passwords mismatch', 
                                                                     'prev_values': True, 
@@ -41,6 +42,6 @@ def userlogin(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponse('login success')
+            return redirect('polls:index')
         else:
             return render(request, 'user/login.html', context={'error': 'invalid credentials'})
