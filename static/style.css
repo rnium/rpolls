@@ -70,7 +70,7 @@
     margin-right: 0 !important;
     margin: 1em 0 0.5em;
   }
-  body header .navbar .account button {
+  body header .navbar .account a {
     width: 150px;
     margin: 0.2em;
   }
@@ -1666,7 +1666,9 @@ body footer .upper .vl {
 }
 
 .link-btn {
-  padding: 0.4em 2em !important;
+  padding: 0.3em 2em !important;
+  cursor: pointer;
+  text-align: center;
 }
 
 .voted::after {

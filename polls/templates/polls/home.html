@@ -8,7 +8,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="icon" href="{% static 'images/r.png' %}">
-    <title>Register</title>
+    <title>rPolls</title>
 </head>
 <body>
     <header>
@@ -28,28 +28,15 @@
           </nav>
     </header>
     <div class="main-container">
-        <div class="authentication">
-            <div class="wrapper">
-                <form action="{% url 'register' %}" method="POST">
-                    {% csrf_token %}
-                    <h5>Register New User</h5>
-                    {% if error %}
-                    <div class="error">
-                        <i class="bi bi-exclamation-diamond"></i>
-                        <span>{{ error }}</span>
-                    </div>
-                    {% endif %}
-                    {% if prev_values %}
-                    <input type="text" class="textinput" required="" name="username" id="username" placeholder="Desired Username" value="{{ username }}">
-                    <input type="password" class="textinput" required="" name="password1" id="password1" placeholder="Enter Password" value="{{ password1 }}">
-                    <input type="password" class="textinput" required="" name="password2" id="password2" placeholder="Retype Password" value="{{ password2 }}">
-                    {% else %}
-                    <input type="text" class="textinput" required="" name="username" id="username" placeholder="Desired Username">
-                    <input type="password" class="textinput" required="" name="password1" id="password1" placeholder="Enter Password">
-                    <input type="password" class="textinput" required="" name="password2" id="password2" placeholder="Retype Password">
-                    {% endif %}
-                    <input type="submit" value="Register" required="" class="btn-1">
-                </form>
+        <div class="intro">
+            <div class="banner">
+                <img src=" {% static 'images/re_yliv.svg' %}">
+            </div>
+            <div class="info">
+                <div class="about">Create, manage and perticipate polls on the go</div>
+                <div class="get-started">
+                    <a href="{% url 'register' %}" class="btn-2">Get Started</a>
+                </div>
             </div>
         </div>
     </div>
