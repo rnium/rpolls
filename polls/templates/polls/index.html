@@ -94,7 +94,7 @@
                         <a class="post-title" href="#">{{ forum.forum_title }}</a>
                         <div class="last-post">
                             <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">{{ forum.last_post_time }}</span>
+                            <span class="date">{{ forum.last_post_time|date:"h:i A, M j o" }}</span>
                             <span class="user">by {{ forum.last_post_user }}</span>
                         </div>
                     </div>
@@ -173,34 +173,34 @@
                         <div class="stat-left-col">
                             <div class="s-item">
                                 <span class="label">total polls:&nbsp;</span>
-                                <span class="value">53</span>
+                                <span class="value">{{ stat.user_created_poll_nums }}</span>
                             </div>
                             <div class="s-item">
                                 <span class="label">total votes:&nbsp;</span>
-                                <span class="value">2334</span>
+                                <span class="value">{{ stat.user_vote_gain }}</span>
                             </div>
                             <div class="s-item">
                                 <span class="label">currently active polls:&nbsp;</span>
-                                <span class="value">4</span>
+                                <span class="value">{{ stat.user_created_active_polls }}</span>
                             </div>
                             <div class="s-item">
                                 <span class="label">most recent poll:&nbsp;</span>
-                                <span class="value"><a href="#">Lorem ipsum dolor sit</a></span>
+                                <span class="value"><a href="#">{{ stat.recent_poll_title }}</a></span>
                             </div>
                             
                         </div>
                         <div class="stat-right-col">
                             <div class="s-item">
                                 <span class="label">total perticipation:&nbsp;</span>
-                                <span class="value">53</span>
+                                <span class="value">{{ stat.users_vote_count }}</span>
                             </div>
                             <div class="s-item">
                                 <span class="label">my last vote:&nbsp;</span>
-                                <span class="value"><a href="#">Lorem ipsum dolor sit amet</a></span>
+                                <span class="value"><a href="#">{{ stat.user_last_vote_poll_title }}</a></span>
                             </div>
                             <div class="s-item">
                                 <span class="label">last vote time:&nbsp;</span>
-                                <span class="value">10:13PM, 21April 2022</span>
+                                <span class="value">{{ stat.user_last_vote_time }}</span>
                             </div>
                         </div>
                     </div>
