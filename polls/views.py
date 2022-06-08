@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from polls.models import (Poll, Choice, Vote)
 from forums.models import (ForumTopic, Post)
+from django.urls import reverse
 
 def homepageview(request):
     return render(request, 'polls/home.html')
+
 
 def get_forum_panel_context(request):
     recentforums = ForumTopic.objects.filter(active=True).order_by('-added')[:5]
@@ -19,8 +21,9 @@ def get_forum_panel_context(request):
         recentforums_context.append(unit_context)
     return recentforums_context
 
+
 def get_polls_panel_context(request):
-    recentpolls = Poll.objects.filter(public=True, active=True).order_by('-added')[:3]
+    recentpolls = Poll.objects.filter(public=True, active=True).order_by('-added')[:5]
     recentpolls_context = []
     for poll in recentpolls:
         poll_id = poll.id
@@ -38,6 +41,7 @@ def get_polls_panel_context(request):
                         'last_vote_time': last_vote_time, 'last_vote_voter': last_vote_voter}
         recentpolls_context.append(unit_context)
     return recentpolls_context
+
 
 def pollshomepage(request):
     recentpolls_context = get_polls_panel_context(request)
@@ -106,4 +110,49 @@ def pollshomepage(request):
     return render(request, 'polls/index.html', context={'recentpolls': recentpolls_context, 'forums': recentforums_context, 
                                                         'recentpolls_user': recentpolls_user_context,
                                                         'paginator': paginator_context, 'stat': stat_context})
+
+
+def polldetail(request, pk):
+    polldetail_context = dict()
+    polldetail_context['polls_panel_context'] = get_polls_panel_context(request)
+    polldetail_context['forum_panel_context'] = get_forum_panel_context(request)
+    poll = Poll.objects.get(pk=pk)
+    polldetail_context['poll_id'] = poll.id
+    polldetail_context['poll_url'] = request.build_absolute_uri()
+    polldetail_context['poll_title'] = poll.title
+    polldetail_context['poll_author'] = poll.author
+    polldetail_context['poll_added'] = poll.added
+    polldetail_context['is_active_poll'] = poll.active
+    if poll.active:
+        polldetail_context['active_status'] = 'active'
+    else:
+        polldetail_context['active_status'] = 'inactive'
     
+    try:
+        myVote = poll.pollvote.get(voter=request.user)
+        polldetail_context['my_vote_time'] = myVote.vote_time
+    except Exception:
+        pass
+    try:
+        lastVote = poll.pollvote.latest('vote_time')
+        polldetail_context['last_vote_time'] = lastVote.vote_time
+        polldetail_context['last_vote_voter'] = lastVote.voter
+    except Exception:
+        pass
+    polldetail_context['poll_banner_url'] = poll.banner.url
+    poll_choices = poll.choice.all()
+    total_votes = poll.pollvote.count()
+    choices_context = []
+    for choice in poll_choices:
+        choice_text = choice.choicetext
+        choice_votes = choice.choicevote.count()
+        percentVotes = (choice_votes/total_votes)*100
+        choice_votes_percent = round(percentVotes, 2)
+        progressbar_progress = round(percentVotes)
+        unit_context = {'choice_text':choice_text, 'choice_votes':choice_votes, 'choice_votes_percent':choice_votes_percent,
+                        'progressbar_progress':progressbar_progress}
+        choices_context.append(unit_context)
+    polldetail_context['choices'] = choices_context
+    polldetail_context['total_votes'] = total_votes
+    return render(request, 'polls/poll_detail.html', context=polldetail_context)
+

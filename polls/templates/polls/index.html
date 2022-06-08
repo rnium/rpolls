@@ -74,7 +74,7 @@
                         {% if poll.vote_count%}
                         <div class="last-vote">
                             <span class="label"><i class="bi bi-check-all"></i></span>
-                            <span class="date">{{ poll.last_vote_time }}</span>
+                            <span class="date">{{ poll.last_vote_time|date:"h:i A, j M o" }}</span>
                             <span class="user">by {{ poll.last_vote_voter }}</span>
                         </div>
                         {% endif %}
@@ -94,13 +94,12 @@
                         <a class="post-title" href="#">{{ forum.forum_title }}</a>
                         <div class="last-post">
                             <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">{{ forum.last_post_time|date:"h:i A, M j o" }}</span>
+                            <span class="date">{{ forum.last_post_time|date:"h:i A, j M o" }}</span>
                             <span class="user">by {{ forum.last_post_user }}</span>
                         </div>
                     </div>
                     {% endfor %}
                     <a href='#' class="btn-1 link-btn">View All</a>
-                    
                 </div>
             </div>
         </div>
@@ -110,7 +109,6 @@
                     <span class="icon me-1"><i class="bi bi-person-lines-fill"></i></span>
                     <span class="title">My Polls</span>
                 </div>
-                <!-- if content -->
                 {% if recentpolls_user %}
                 <div class="content">
                     {% for poll in recentpolls_user %}
@@ -130,7 +128,7 @@
                             {% if poll.vote_count %}
                             <div class="votes si">
                                 <span class="label"><i class="bi bi-clock me-1"></i>last vote:&nbsp;</span>
-                                <span class="value">{{ poll.last_vote_time }}</span>
+                                <span class="value">{{ poll.last_vote_time|date:"h:i A, j M o" }}</span>
                             </div>
                             {% endif %}
                             <div class="votes si">
@@ -143,7 +141,6 @@
                         </div>
                     </div>
                     {% endfor %}
-                    
                 </div>
                 {% if paginator.has_more_page %}
                 <div class="paginator">
@@ -187,7 +184,6 @@
                                 <span class="label">most recent poll:&nbsp;</span>
                                 <span class="value"><a href="#">{{ stat.recent_poll_title }}</a></span>
                             </div>
-                            
                         </div>
                         <div class="stat-right-col">
                             <div class="s-item">
@@ -200,7 +196,7 @@
                             </div>
                             <div class="s-item">
                                 <span class="label">last vote time:&nbsp;</span>
-                                <span class="value">{{ stat.user_last_vote_time }}</span>
+                                <span class="value">{{ stat.user_last_vote_time|date:"h:i A, j M o" }}</span>
                             </div>
                         </div>
                     </div>
