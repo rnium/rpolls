@@ -24,6 +24,7 @@ class Choice(models.Model):
 
 class Vote(models.Model):
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE, related_name='choicevote')
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name='pollvote')
     voter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uservote')
     vote_time = models.DateTimeField(auto_now_add=True)
     vote_update_time = models.DateTimeField(auto_now=True)

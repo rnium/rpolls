@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'images/r.png' %}">
+    <title>Homepage</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand ms-5 pe-3" href="#"><span class="r">r</span>Polls</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item me-1">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Poll
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Create</a></li>
+                      <li><a class="dropdown-item" href="#">Browse</a></li>
+                      <li><a class="dropdown-item" href="#">My Polls</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Forum
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Start New Topic</a></li>
+                      <li><a class="dropdown-item" href="#">Browse</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Vote history</a>
+                  </li>
+                </ul>
+                <div class="account d-flex me-4">
+                    <div class="profile d-flex my-auto me-3">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="username-viewonly ms-1">username</span>
+                    </div>
+                  <button class="btn-1">Logout</button>
+                </div>
+              </div>
+            </div>
+          </nav>
+    </header>
+    <div class="main-container">
+        <div class="left-col">
+            <div class="recent-polls card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-activity"></i></span>
+                    <span class="title">Most Recent</span>
+                </div>
+                <div class="content">
+                    {% for poll in recentpolls %}
+                    <div class="poll-item">
+                        <a class="poll-title" href="#">{{ poll.poll_title }}</a>
+                        <div class="count">
+                            <span class="label">vote count:&nbsp;</span><span class="value">{{ poll.vote_count }}</span>
+                        </div>
+                        {% if poll.vote_count%}
+                        <div class="last-vote">
+                            <span class="label"><i class="bi bi-check-all"></i></span>
+                            <span class="date">{{ poll.last_vote_time }}</span>
+                            <span class="user">by {{ poll.last_vote_voter }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <a href="#" class="btn-1 link-btn">View All</a>
+                </div>
+            </div>
+            <div class="community-forum card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-chat-right"></i></span>
+                    <span class="title">Forums</span>
+                </div>
+                <div class="content">
+                    <div class="forum-post">
+                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
+                        <div class="last-post">
+                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
+                            <span class="date">10:12PM, 14/05/2021</span>
+                            <span class="user">by user1</span>
+                        </div>
+                    </div>
+                    <div class="forum-post">
+                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
+                        <div class="last-post">
+                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
+                            <span class="date">10:12PM, 14/05/2021</span>
+                            <span class="user">by user1</span>
+                        </div>
+                    </div>
+                    <div class="forum-post">
+                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
+                        <div class="last-post">
+                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
+                            <span class="date">10:12PM, 14/05/2021</span>
+                            <span class="user">by user1</span>
+                        </div>
+                    </div>
+                    <div class="forum-post">
+                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
+                        <div class="last-post">
+                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
+                            <span class="date">10:12PM, 14/05/2021</span>
+                            <span class="user">by user1</span>
+                        </div>
+                    </div>
+                    <div class="forum-post">
+                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
+                        <div class="last-post">
+                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
+                            <span class="date">10:12PM, 14/05/2021</span>
+                            <span class="user">by user1</span>
+                        </div>
+                    </div>
+                    <form class="view-all">
+                        <button class="btn-1">View All</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="right-col">
+            <div class="my-polls card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-person-lines-fill"></i></span>
+                    <span class="title">My Polls</span>
+                </div>
+                <!-- if content -->
+                <div class="content">
+                    <div class="poll-item">
+                        <div class="title">
+                            <i class="bi bi-node-plus me-1"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
+                        </div>
+                        <div class="stat">
+                            <div class="views si">
+                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
+                                <span class="value">67</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-check-circle me-1"></i>total votes:&nbsp;</span>
+                                <span class="value">21</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-clock me-1"></i>last vote:&nbsp;</span>
+                                <span class="value">13:04:34, 25May 2022</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-play-circle-fill me-1"></i>active</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="poll-item">
+                        <div class="title">
+                            <i class="bi bi-node-plus me-1"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
+                        </div>
+                        <div class="stat">
+                            <div class="views si">
+                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
+                                <span class="value">67</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-check-circle me-1"></i>total votes:&nbsp;</span>
+                                <span class="value">21</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-clock me-1"></i>last vote:&nbsp;</span>
+                                <span class="value">13:04:34, 25May 2022</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-pause-circle me-1"></i>inactive</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="poll-item">
+                        <div class="title">
+                            <i class="bi bi-node-plus me-1"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
+                        </div>
+                        <div class="stat">
+                            <div class="views si">
+                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
+                                <span class="value">67</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-check-circle me-1"></i>total votes:&nbsp;</span>
+                                <span class="value">21</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-clock me-1"></i>last vote:&nbsp;</span>
+                                <span class="value">13:04:34, 25May 2022</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-play-circle-fill me-1"></i>active</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="poll-item">
+                        <div class="title">
+                            <i class="bi bi-node-plus me-1"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
+                        </div>
+                        <div class="stat">
+                            <div class="views si">
+                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
+                                <span class="value">67</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-check-circle me-1"></i>total votes:&nbsp;</span>
+                                <span class="value">21</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-clock me-1"></i>last vote:&nbsp;</span>
+                                <span class="value">13:04:34, 25May 2022</span>
+                            </div>
+                            <div class="votes si">
+                                <span class="label"><i class="bi bi-play-circle-fill me-1"></i>active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="paginator">
+                    <div class="inner">
+                        <ul>
+                            <a href="#"><li>&#8592;</li></a>
+                            <li>page 3 of 5</li>
+                            <a href="#"><li>&#8594;</li></a>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <!-- if no content -->
+                <!-- <div class="no-content">
+                    <div><i class="bi bi-exclamation-lg"></i></div>
+                    <div class="info">You have no polls yet</div>
+                </div> -->
+            </div>
+            <div class="my-stats card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-bar-chart"></i></span>
+                    <span class="title">Stats</span>
+                </div>
+                <div class="content">
+                    <div class="stat">
+                        <div class="stat-left-col">
+                            <div class="s-item">
+                                <span class="label">total polls:&nbsp;</span>
+                                <span class="value">53</span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">total votes:&nbsp;</span>
+                                <span class="value">2334</span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">currently active polls:&nbsp;</span>
+                                <span class="value">4</span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">most recent poll:&nbsp;</span>
+                                <span class="value"><a href="#">Lorem ipsum dolor sit</a></span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">last vote at:&nbsp;</span>
+                                <span class="value">10:33PM</span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">popularity index:&nbsp;</span>
+                                <span class="value">103</span>
+                            </div>
+                            
+                        </div>
+                        <div class="stat-right-col">
+                            <div class="s-item">
+                                <span class="label">total perticipation:&nbsp;</span>
+                                <span class="value">53</span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">my last vote:&nbsp;</span>
+                                <span class="value"><a href="#">Lorem ipsum dolor sit amet</a></span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">last vote time:&nbsp;</span>
+                                <span class="value">10:13PM, 21April 2022</span>
+                            </div>
+                            <div class="s-item">
+                                <span class="label">total wins:&nbsp;</span>
+                                <span class="value">35</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="upper">
+            <div class="col-1">
+                <div class="site-name">
+                    <span class="r">r</span>Polls</a>
+                </div>
+            </div>
+            <div class="vl"></div>
+            <div class="col-2">
+                <a href="#">About</a>
+                <a href="#">Features</a>
+                <a href="#"><i class="bi bi-github"></i>Project Sourcecode</a>
+            </div>
+            <div class="vl"></div>
+            <div class="col-3">
+                <a href="#"><i class="bi bi-chat-square-dots-fill"></i>Contact us</a>
+                <a href="#"><i class="bi bi-flag-fill"></i>Report an issue</a> 
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

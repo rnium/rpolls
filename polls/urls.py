@@ -1,5 +1,6 @@
-# from django.urls import path
+from django.urls import path
+from polls.views import (pollshomepage)
 
-# urlpatterns = [
-#     # path('admin/', admin.site.urls),
-# ]
+urlpatterns = [
+    path('', pollshomepage, name='index'),
+]
