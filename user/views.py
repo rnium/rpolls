@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.contrib.auth import (login, authenticate, logout)
 
 from django.http import HttpResponse
 
@@ -31,9 +32,15 @@ def register(request):
                                                                     'password2': password2})
 
 
-# def login(request):
-#     if request.method == "GET":
-#         return render(request, 'user/login.html')
-#     elif request.method == "POST":
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
+def userlogin(request):
+    if request.method == "GET":
+        return render(request, 'user/login.html')
+    elif request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponse('login success')
+        else:
+            return render(request, 'user/login.html', context={'error': 'invalid credentials'})
