@@ -27,10 +27,10 @@ def forums_all(request):
     paginator_context['has_more_pages'] = forums.has_previous() or forums.has_next()
     paginator_context['has_next'] = forums.has_next()
     paginator_context['has_previous'] = forums.has_previous()
-    paginator_context['current_page'] = forums.number()
-    paginator_context['total_pages'] = forums.paginator.num_pages()
-    paginator_context['prev_page_num'] = forums.previous_page_number()
-    paginator_context['next_page_num'] = forums.next_page_number()
+    paginator_context['current_page'] = forums.number
+    paginator_context['total_pages'] = forums.paginator.num_pages
+    paginator_context['prev_page_num'] = forums.previous_page_number
+    paginator_context['next_page_num'] = forums.next_page_number
     forums_all_context['paginator'] = paginator_context
 
     return render(request, 'forums/forums_all.html', context=forums_all_context)

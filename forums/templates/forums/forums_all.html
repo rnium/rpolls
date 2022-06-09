@@ -186,15 +186,17 @@
                     {% endfor %}
                     
                 </div>
+                {% if paginator.has_more_pages %}
                 <div class="paginator">
                     <div class="inner">
                         <ul>
-                            <a href="#"><li>&#8592;</li></a>
-                            <li>page 3 of 5</li>
-                            <a href="#"><li>&#8594;</li></a>
+                            {% if paginator.has_previous %}<a href="?page={{ paginator.prev_page_num }}"><li>&#8592;</li></a>{% endif %}
+                            <li>page&nbsp;{{ paginator.current_page }}&nbsp;of&nbsp;{{ paginator.total_pages }}</li>
+                            {% if paginator.has_next %}<a href="?page={{ paginator.next_page_num }}"><li>&#8594;</li></a>{% endif %}
                         </ul>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
