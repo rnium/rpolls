@@ -80,7 +80,7 @@
                         {% endif %}
                     </div>
                     {% endfor %}
-                    <a href="#" class="btn-1 link-btn">View All</a>
+                    <a href="{% url 'polls:browse' %}" class="btn-1 link-btn">View All</a>
                 </div>
             </div>
             <div class="community-forum card">
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     {% endfor %}
-                    <a href='#' class="btn-1 link-btn">View All</a>
+                    <a href="{% url 'forums:forum_all' %}" class="btn-1 link-btn">View All</a>
                 </div>
             </div>
         </div>

@@ -2,14 +2,17 @@ from django.shortcuts import redirect, render, get_object_or_404
 from forums.models import (ForumTopic, Post)
 from django.core.paginator import Paginator
 import datetime
+from polls.views import (get_polls_panel_context, get_forum_panel_context)
 
 
 def forums_all(request):
     forums_raw = ForumTopic.objects.all().order_by('-added')
-    paginator_forums = Paginator(forums_raw, 2)
+    paginator_forums = Paginator(forums_raw, 10)
     page_no = request.GET.get('page')
     forums = paginator_forums.get_page(page_no)
     forums_all_context = dict()
+    forums_all_context['forum_panel'] = get_forum_panel_context(request)
+    forums_all_context['recentpolls'] = get_polls_panel_context(request)
     forum_topics = []
     for forum in forums:
         unit_context = dict()
@@ -43,6 +46,8 @@ def forumdetail(request, pk):
     forumViews = forum.views + 1
     ForumTopic.objects.filter(pk=pk).update(views=forumViews)
     forum_detail_context = dict()
+    forum_detail_context['forum_panel'] = get_forum_panel_context(request)
+    forum_detail_context['recentpolls'] = get_polls_panel_context(request)
     forum_detail_context['forum_id'] = forum.id
     forum_detail_context['topic_title'] = forum.title
     forum_detail_context['lock_status'] = forum.locked
@@ -73,10 +78,17 @@ def reply_to_forum(request, pk):
     else:
         reply_text = request.POST.get('reply-text', False)
         if not reply_text:
-            return render(request, 'polls/error.html', {'error':'Cannot Post Empty Reply'})
+            polls_panel_context = get_polls_panel_context(request)
+            forums_panel_context = get_forum_panel_context(request)
+            context = {'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Cannot Post Empty Reply'}
+            return render(request, 'polls/error.html', context=context)
         forum_topic = get_object_or_404(ForumTopic, pk=pk)
         if forum_topic.locked == True or forum_topic.active != True:
-            return render(request, 'polls/error.html', {'error':'Topic Is Locked/Inactive'})
+            polls_panel_context = get_polls_panel_context(request)
+            forums_panel_context = get_forum_panel_context(request)
+            context = {'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Topic Is Locked/Inactive'}
+            return render(request, 'polls/error.html', context=context)
+            
         post = Post.objects.create(post_text=reply_text, forum=forum_topic, post_author=request.user)
         post.save()
         return redirect('forums:forum_detail', pk=pk)
