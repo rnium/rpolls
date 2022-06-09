@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', homepageview, name="homepage"),
     path('polls/', include('polls.urls')),
+    path('forums/', include('forums.urls')),
     path('register/', register, name='register'),
     path('login/', userlogin, name='login'),
 ]

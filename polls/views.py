@@ -5,8 +5,8 @@ from forums.models import (ForumTopic, Post)
 from django.urls import reverse
 
 def homepageview(request):
-    # if request.user.is_authenticated:
-    #     return redirect('polls:index')
+    if request.user.is_authenticated:
+        return redirect('polls:index')
     return render(request, 'polls/home.html')
 
 
@@ -123,8 +123,8 @@ def pollshomepage(request):
 
 def polldetail(request, pk):
     polldetail_context = dict()
-    polldetail_context['polls_panel_context'] = get_polls_panel_context(request)
-    polldetail_context['forum_panel_context'] = get_forum_panel_context(request)
+    polldetail_context['recentpolls'] = get_polls_panel_context(request)
+    polldetail_context['forums'] = get_forum_panel_context(request)
     poll = Poll.objects.get(pk=pk)
     pollViews = poll.views + 1
     Poll.objects.filter(pk=pk).update(views=pollViews)

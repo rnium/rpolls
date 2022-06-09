@@ -91,7 +91,7 @@
                 <div class="content">
                     {% for forum in forums %}
                     <div class="forum-post">
-                        <a class="post-title" href="#">{{ forum.forum_title }}</a>
+                        <a class="post-title" href="{% url 'forums:forum_detail' forum.forum_id %}">{{ forum.forum_title }}</a>
                         <div class="last-post">
                             <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
                             <span class="date">{{ forum.last_post_time|date:"h:i A, j M o" }}</span>
@@ -183,7 +183,7 @@
                             <div class="s-item">
                                 <span class="label">most recent poll:&nbsp;</span>
                                 {% if stat.recent_poll_id %}
-                                <span class="value"><a href="{% url 'polls:polldetails' stat.recent_poll_id %}">{{ stat.recent_poll_title }}</a></span>
+                                <span class="value"><a href="{% url 'polls:polldetails' stat.recent_poll_id %}">{{ stat.recent_poll_title|truncatechars:20 }}</a></span>
                                 {% else %}
                                 <span class="value">no poll</span>
                                 {% endif %}
@@ -197,7 +197,7 @@
                             <div class="s-item">
                                 <span class="label">my last vote:&nbsp;</span>
                                 {% if stat.user_last_vote_poll_id %}
-                                <span class="value"><a href="{% url 'polls:polldetails' stat.user_last_vote_poll_id %}">{{ stat.user_last_vote_poll_title }}</a></span>
+                                <span class="value"><a href="{% url 'polls:polldetails' stat.user_last_vote_poll_id %}">{{ stat.user_last_vote_poll_title|truncatechars:20 }}</a></span>
                                 {% else %}
                                 <span class="value">no vote</span>
                                 {% endif %}

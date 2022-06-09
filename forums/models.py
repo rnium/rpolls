@@ -18,7 +18,7 @@ class Post(models.Model):
     forum = models.ForeignKey(ForumTopic, on_delete=models.CASCADE, related_name='forumpost')
     post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userpost')
     added = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(default=None)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"forum({self.forum}) post"

@@ -62,45 +62,25 @@
             <div class="recent-polls card">
                 <div class="heading">
                     <span class="icon me-1"><i class="bi bi-activity"></i></span>
-                    <span class="title">Most Popular</span>
+                    <span class="title">Most Recent</span>
                 </div>
                 <div class="content">
+                    {% for poll in recentpolls %}
                     <div class="poll-item">
-                        <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
+                        <a class="poll-title" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>
                         <div class="count">
-                            <span class="label">vote count:&nbsp;</span><span class="value">457</span>
+                            <span class="label">vote count:&nbsp;</span><span class="value">{{ poll.vote_count }}</span>
                         </div>
+                        {% if poll.vote_count%}
                         <div class="last-vote">
                             <span class="label"><i class="bi bi-check-all"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
+                            <span class="date">{{ poll.last_vote_time|date:"h:i A, j M o" }}</span>
+                            <span class="user">by {{ poll.last_vote_voter }}</span>
                         </div>
+                        {% endif %}
                     </div>
-                    <div class="poll-item">
-                        <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
-                        <div class="count">
-                            <span class="label">vote count:&nbsp;</span><span class="value">457</span>
-                        </div>
-                        <div class="last-vote">
-                            <span class="label"><i class="bi bi-check-all"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
-                        </div>
-                    </div>
-                    <div class="poll-item">
-                        <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
-                        <div class="count">
-                            <span class="label">vote count:&nbsp;</span><span class="value">457</span>
-                        </div>
-                        <div class="last-vote">
-                            <span class="label"><i class="bi bi-check-all"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
-                        </div>
-                    </div>
-                    <form class="view-all">
-                        <button class="btn-1">View All</button>
-                    </form>
+                    {% endfor %}
+                    <a href="#" class="btn-1 link-btn">View All</a>
                 </div>
             </div>
             <div class="community-forum card">
@@ -109,49 +89,17 @@
                     <span class="title">Forums</span>
                 </div>
                 <div class="content">
+                    {% for forum in forums %}
                     <div class="forum-post">
-                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
+                        <a class="post-title" href="{% url 'forums:forum_detail' forum.forum_id %}">{{ forum.forum_title }}</a>
                         <div class="last-post">
                             <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
+                            <span class="date">{{ forum.last_post_time|date:"h:i A, j M o" }}</span>
+                            <span class="user">by {{ forum.last_post_user }}</span>
                         </div>
                     </div>
-                    <div class="forum-post">
-                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
-                        <div class="last-post">
-                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
-                        </div>
-                    </div>
-                    <div class="forum-post">
-                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
-                        <div class="last-post">
-                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
-                        </div>
-                    </div>
-                    <div class="forum-post">
-                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
-                        <div class="last-post">
-                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
-                        </div>
-                    </div>
-                    <div class="forum-post">
-                        <a class="post-title" href="#">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem animi quas nisi. Temporibus aut sapiente nam saepe. Nihil, cumque quos.</a>
-                        <div class="last-post">
-                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
-                            <span class="date">10:12PM, 14/05/2021</span>
-                            <span class="user">by user1</span>
-                        </div>
-                    </div>
-                    <form class="view-all">
-                        <button class="btn-1">View All</button>
-                    </form>
+                    {% endfor %}
+                    <a href='#' class="btn-1 link-btn">View All</a>
                 </div>
             </div>
         </div>
