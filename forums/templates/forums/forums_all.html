@@ -162,78 +162,29 @@
                     <span class="title">Browse Forums</span>
                 </div>
                 <div class="content">
+                    {% for forum in forums %}
                     <div class="forum-item">
                         <div class="title">
-                            <i class="bi bi-chat-square me-2"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
+                            <i class="bi bi-chat-square me-2"></i><a href="{% url 'forums:forum_detail' forum.forum_id %}">{{ forum.title }}</a>
                         </div>
-                        <div class="post-body">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum laborum possimus voluptatum distinctio vero expedita accusamus minima, iste consequatur, reiciendis nam deserunt aspernatur, veritatis iure itaque dolore aliquam. Quos, facilis.
-                        </div>
+                        <div class="post-body">{{ forum.first_post_text|truncatechars:330 }}</div>
                         <div class="stat">
                             <div class="views si">
                                 <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
-                                <span class="value">67</span>
+                                <span class="value">{{ forum.views }}</span>
                             </div>
                             <div class="replies si">
                                 <span class="label"><i class="bi bi-reply me-1"></i>replies:&nbsp;</span>
-                                <span class="value">21</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="forum-item">
-                        <div class="title">
-                            <i class="bi bi-chat-square me-2"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
-                        </div>
-                        <div class="post-body">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum laborum possimus voluptatum distinctio vero expedita accusamus minima, iste consequatur, reiciendis nam deserunt aspernatur, veritatis iure itaque dolore aliquam. Quos, facilis.
-                        </div>
-                        <div class="stat">
-                            <div class="views si">
-                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
-                                <span class="value">67</span>
+                                <span class="value">{{ forum.num_replies }}</span>
                             </div>
                             <div class="replies si">
-                                <span class="label"><i class="bi bi-reply me-1"></i>replies:&nbsp;</span>
-                                <span class="value">21</span>
+                                <span class="label"><i class="bi bi-clock-history me-1"></i>last reply:&nbsp;</span>
+                                <span class="label">{{ forum.last_post_time|date:"h:i:s A, j M o" }}&nbsp;by&nbsp;{{ forum.last_post_username }}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="forum-item">
-                        <div class="title">
-                            <i class="bi bi-chat-square me-2"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
-                        </div>
-                        <div class="post-body">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum laborum possimus voluptatum distinctio vero expedita accusamus minima, iste consequatur, reiciendis nam deserunt aspernatur, veritatis iure itaque dolore aliquam. Quos, facilis.
-                        </div>
-                        <div class="stat">
-                            <div class="views si">
-                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
-                                <span class="value">67</span>
-                            </div>
-                            <div class="replies si">
-                                <span class="label"><i class="bi bi-reply me-1"></i>replies:&nbsp;</span>
-                                <span class="value">21</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="forum-item">
-                        <div class="title">
-                            <i class="bi bi-chat-square me-2"></i><a href="#">Lorem ipsum, dolor sit amet consectetur adipisicing</a>
-                        </div>
-                        <div class="post-body">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum laborum possimus voluptatum distinctio vero expedita accusamus minima, iste consequatur, reiciendis nam deserunt aspernatur, veritatis iure itaque dolore aliquam. Quos, facilis.
-                        </div>
-                        <div class="stat">
-                            <div class="views si">
-                                <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>
-                                <span class="value">67</span>
-                            </div>
-                            <div class="replies si">
-                                <span class="label"><i class="bi bi-reply me-1"></i>replies:&nbsp;</span>
-                                <span class="value">21</span>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
+                    
                 </div>
                 <div class="paginator">
                     <div class="inner">
