@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from polls.models import (Poll, Choice, Vote)
 from forums.models import (ForumTopic, Post)
-from django.urls import reverse
-
+from django.http import HttpResponse
 
 def homepageview(request):
     if request.user.is_authenticated:
@@ -200,3 +199,31 @@ def polls_all(request):
     browse_poll_context['paginator'] = paginator_context
     browse_poll_context['polls'] = polls_context
     return render(request, 'polls/polls_all.html', context=browse_poll_context)
+
+
+def create_poll(request):
+    polls_panel = get_polls_panel_context(request)
+    forums_panel = get_forum_panel_context(request)
+    if request.method == "GET":
+        return render(request, 'polls/poll_create.html', context={'recentpolls':polls_panel, 'forums':forums_panel})
+    else:
+        poll_kwargs = dict()
+        poll_kwargs['title'] = request.POST.get('poll-title')
+        poll_kwargs['author'] = request.user
+        visibility = request.POST.get('visibility')
+        if bool(visibility):
+            poll_kwargs['public'] = True
+        else:
+            poll_kwargs['public'] = False
+        banner_img = request.FILES.get('poll-banner', False)
+        if bool(banner_img):
+            poll_kwargs['banner'] = banner_img
+        new_poll = Poll.objects.create(**poll_kwargs)
+        new_poll.save()
+        choices_raw = list(request.POST)[4:]
+        choices = []
+        for choice in choices_raw:
+            choices.append(request.POST.get(choice))
+
+        return HttpResponse(str(poll_kwargs.keys()))
+    

@@ -8,7 +8,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="icon" href="{% static 'images/r.png' %}">
-    <title>Poll details</title>
+    <title>Create Poll</title>
 </head>
 <body>
     <header>
@@ -104,72 +104,57 @@
             </div>
         </div>
         <div class="right-col">
-            <div class="poll-detail">
-                <div class="content">
-                    <div class="poll-heading">
-                        <div class="banner"><img src="{{ poll_banner_url }}" alt=""></div>
-                        <div class="title">{{ poll_title }}</div>
-                    </div>
-                    <div class="pool-info">
-                        <div class="pool-choices">
-                            <ul class="choice-list">
-                                {% for choice in choices%}
-                                <li class="choice card-simple">
-                                    <div class="choice-text">{{ choice.choice_text }}</div>
-                                    <div class="info">
-                                        <div class="choice-votes me-2"><span class="label">votes:&nbsp;</span><span class='value'>{{ choice.choice_votes }}</span></div>
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ choice.progressbar_progress }}%;" aria-valuenow="{{ choice.progressbar_progress }}" aria-valuemin="0" aria-valuemax="100">{{ choice.choice_votes_percent }}%</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="poll-stats card-headless">
-                            <ul class="stats">
-                                <li>
-                                    <span class="label">created by:&nbsp;</span><span class="user">{{ poll_author }}</span>
-                                </li>
-                                <li>
-                                    <span class="label">created at:&nbsp;</span><span class="value">{{ poll_added|date:"h:i A, j M o"  }}</span>
-                                </li>
-                                <li>
-                                    <span class="label">total votes:&nbsp;</span><span class="value">{{ total_votes }}</span>
-                                </li>
-                                <li>
-                                    <span class="label">total views:&nbsp;</span><span class="value">{{ poll_views }}</span>
-                                </li>
-                                {% if my_vote_time %}
-                                <li>
-                                    <span class="label">my vote:&nbsp;</span><span class="value">
-                                        <span>{{ my_vote_time|date:"h:i A, j M o" }}&nbsp;</span>
-                                    </span>
-                                </li>
-                                {% endif %}
-        {% if last_vote_time %} <li>
-                                    <span class="label">last vote:&nbsp;</span><span class="value">
-                                        <span>{{ last_vote_time|date:"h:i A, j M o" }}&nbsp;</span>
-                                        <span>by <span class="user">{{ last_vote_voter }}</span></span>
-                                    </span>
-                                </li>{% endif %}
-                                <li>
-                                    <span class="label">active status:&nbsp;</span><span class="value">{{ active_status }}</span>
-                                </li>
-                            </ul>
-                            <div class="share-link">
-                                <div class="inner">
-                                    <i class="bi bi-share-fill me-2"></i>
-                                    <a href="{% url 'polls:polldetails' poll_id %}" id="poll-link">{{ poll_url }}</a>
-                                    <button id="ctc">copy</button>
+            <div class="createpoll card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-node-plus"></i></span>
+                    <span class="title">Create Poll</span>
+                </div>
+                <div class="wrapper">
+                    <form action="{% url 'polls:create_poll' %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
+                        <div class="basic-info">
+                            <div class="title">
+                                <label for="poll-title">Poll title</label>
+                                <input type="text" class="textinput" id="poll-title" name="poll-title" placeholder="Enter poll title" required="">
+                            </div>
+                            <div class="banner">
+                                <label for="poll-banner">Poll banner</label>
+                                <input type="file" class="form-control" id="poll-banner" name="poll-banner">
+                            </div>
+                            <div class="visibility">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="visibility" value="public" checked>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Public Poll</label>
                                 </div>
                             </div>
                         </div>
-                        <div class="my-action">
-                            <a href="#" type="submit" class="btn-1 link-btn me-1">Update poll</a>
-                            <a href="#" type="submit" class="btn-1 link-btn">Update vote</a>
+                        <div class="choices-wrapper card">
+                            <div class="heading">
+                                <span class="title">Poll Choices</span>
+                            </div>
+                            <div id="choices">
+                                <input type="text" class="textinput choiceinput" placeholder="choice 1" name="choice1" required="">
+                                <input type="text" class="textinput choiceinput" placeholder="choice 2" name="choice2" required="">
+                            </div>
+                            <div class="actions">
+                                <div class="btn-container">
+                                    <a class="form-btn" id="add-choice">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span>Add Choice</span>
+                                    </a>
+                                </div>
+                                <div class="btn-container">
+                                    <a class="form-btn" id="remove-choice">
+                                        <i class="bi bi-dash-circle"></i>
+                                        <span>Remove Choice</span>
+                                    </a>
+                                </div>
+                            </div>
+    
                         </div>
-                    </div>
+                        <div class="submit-form">
+                            <input type="submit" class="btn-1" value="create">
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -194,7 +179,7 @@
             </div>
         </div>
     </footer>
-    <script src="{% static 'scripts/ctc.js' %}"></script>
+    <script src="{% static 'scripts/script.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
