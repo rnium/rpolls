@@ -1,9 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from forums.models import (ForumTopic, Post)
-from django.http import HttpResponse
+from django.core.paginator import Paginator
+
+def forums_all(request):
+    forums = ForumTopic.objects.all().order_by('-added')
+    forums_all_context = dict()
+    forum_topics = []
+    for 
+
+    return render(request, 'forums/forums_all.html')
 
 def forumdetail(request, pk):
     forum = get_object_or_404(ForumTopic, pk=pk, active=True)
+    forumViews = forum.views + 1
+    forum.objects.filter(pk=pk).update(views=forumViews)
     forum_detail_context = dict()
     forum_detail_context['topic_title'] = forum.title
     forum_detail_context['lock_status'] = forum.locked
