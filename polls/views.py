@@ -4,6 +4,7 @@ from polls.models import (Poll, Choice, Vote)
 from forums.models import (ForumTopic, Post)
 from django.urls import reverse
 
+
 def homepageview(request):
     if request.user.is_authenticated:
         return redirect('polls:index')
@@ -168,3 +169,6 @@ def polldetail(request, pk):
     polldetail_context['total_votes'] = total_votes
     return render(request, 'polls/poll_detail.html', context=polldetail_context)
 
+
+def polls_all(request):
+    return render(request, 'polls/polls_all.html')

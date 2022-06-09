@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from forums.models import (ForumTopic, Post)
 from django.core.paginator import Paginator
 
+
 def forums_all(request):
     forums_raw = ForumTopic.objects.all().order_by('-added')
     paginator_forums = Paginator(forums_raw, 2)
