@@ -7,6 +7,7 @@ class Poll(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='poll')
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
+    visible = models.BooleanField(default=True)
     added = models.DateTimeField(auto_now_add=True)
     views = models.IntegerField(default=0)
 

@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from polls.models import (Poll, Choice, Vote)
 from forums.models import (ForumTopic, Post)
 from django.http import HttpResponse
+from django.urls import reverse
 
 def homepageview(request):
     if request.user.is_authenticated:
@@ -25,7 +26,7 @@ def get_forum_panel_context(request):
 
 
 def get_polls_panel_context(request):
-    recentpolls = Poll.objects.filter(public=True, active=True).order_by('-added')[:5]
+    recentpolls = Poll.objects.filter(public=True, active=True, visible=True).order_by('-added')[:5]
     recentpolls_context = []
     for poll in recentpolls:
         poll_id = poll.id
@@ -50,7 +51,7 @@ def pollshomepage(request):
     # forums panel context
     recentforums_context = get_forum_panel_context(request)
     #user's polls
-    recentpolls_user = Poll.objects.filter(author=request.user).order_by('-added')
+    recentpolls_user = Poll.objects.filter(author=request.user, visible=True).order_by('-added')
     recentpolls_user_context = []
     paginator_context = dict()
     if recentpolls_user.count() > 0:
@@ -123,9 +124,23 @@ def pollshomepage(request):
 
 def polldetail(request, pk):
     polldetail_context = dict()
+    try:
+        poll = Poll.objects.get(pk=pk)
+    except Poll.DoesNotExist:
+        context = {}
+        context['recentpolls'] = get_polls_panel_context(request)
+        context['forums'] = get_forum_panel_context(request)
+        context['error'] = 'Poll Not Found'
+        return render(request, 'polls/error.html', context=context)
+    if not poll.visible:
+        context = {}
+        context['recentpolls'] = get_polls_panel_context(request)
+        context['forums'] = get_forum_panel_context(request)
+        context['error'] = 'Only Admins Can Access'
+        return render(request, 'polls/error.html', context=context)
+
     polldetail_context['recentpolls'] = get_polls_panel_context(request)
     polldetail_context['forums'] = get_forum_panel_context(request)
-    poll = Poll.objects.get(pk=pk)
     pollViews = poll.views + 1
     Poll.objects.filter(pk=pk).update(views=pollViews)
     polldetail_context['poll_id'] = poll.id
@@ -158,7 +173,10 @@ def polldetail(request, pk):
     for choice in poll_choices:
         choice_text = choice.choicetext
         choice_votes = choice.choicevote.count()
-        percentVotes = (choice_votes/total_votes)*100
+        try:
+            percentVotes = (choice_votes/total_votes)*100
+        except ZeroDivisionError:
+            percentVotes = 0
         choice_votes_percent = round(percentVotes, 2)
         progressbar_progress = round(percentVotes)
         unit_context = {'choice_text':choice_text, 'choice_votes':choice_votes, 'choice_votes_percent':choice_votes_percent,
@@ -170,7 +188,7 @@ def polldetail(request, pk):
 
 
 def polls_all(request):
-    polls_all_raw = Poll.objects.filter(public=True, active=True).order_by('-added')
+    polls_all_raw = Poll.objects.filter(public=True, active=True, visible=True).order_by('-added')
     polls_paginator = Paginator(polls_all_raw, 5)
     page_no = request.GET.get('page')
     page_polls = polls_paginator.get_page(page_no)
@@ -220,10 +238,13 @@ def create_poll(request):
             poll_kwargs['banner'] = banner_img
         new_poll = Poll.objects.create(**poll_kwargs)
         new_poll.save()
-        choices_raw = list(request.POST)[4:]
+        choices_raw = list(request.POST)[3:]
         choices = []
         for choice in choices_raw:
-            choices.append(request.POST.get(choice))
-
-        return HttpResponse(str(poll_kwargs.keys()))
+            choice_text = request.POST.get(choice)
+            choices.append(Choice(choicetext=choice_text, poll=new_poll))
+        Choice.objects.bulk_create(choices)
+        poll_link = request.build_absolute_uri(reverse('polls:polldetails', args=(new_poll.id,)))
+        confirm_page_context = {'recentpolls':polls_panel, 'forums':forums_panel, 'poll_id':new_poll.id, 'poll_link':poll_link}
+        return render(request, 'polls/poll_creation_info.html', context=confirm_page_context)
     
