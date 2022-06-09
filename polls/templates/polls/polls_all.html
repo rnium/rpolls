@@ -63,44 +63,9 @@
                 <span class="title">Browse public polls</span>
             </div>
             <div class="content">
+                {% for poll in polls %}
                 <div class="poll-item">
-                    <a class="poll-title voted" href="#">Lorem ipsum dolor sit amet consectetur</a>
-                    <div class="count">
-                        <span class="label">vote count:&nbsp;</span><span class="value">457</span>
-                    </div>
-                    <div class="owner-info">
-                        <span class="label"><i class="bi bi-node-plus"></i>&nbsp;poll created at</span>
-                        <span class="date">10:12PM, 14/05/2021</span>
-                        <span>by&nbsp;</span>
-                        <span class="user">user1</span>
-                    </div>
-                </div>
-                <div class="poll-item">
-                    <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
-                    <div class="count">
-                        <span class="label">vote count:&nbsp;</span><span class="value">457</span>
-                    </div>
-                    <div class="owner-info">
-                        <span class="label"><i class="bi bi-node-plus"></i>&nbsp;poll created at</span>
-                        <span class="date">10:12PM, 14/05/2021</span>
-                        <span>by&nbsp;</span>
-                        <span class="user">user1</span>
-                    </div>
-                </div>
-                <div class="poll-item">
-                    <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
-                    <div class="count">
-                        <span class="label">vote count:&nbsp;</span><span class="value">457</span>
-                    </div>
-                    <div class="owner-info">
-                        <span class="label"><i class="bi bi-node-plus"></i>&nbsp;poll created at</span>
-                        <span class="date">10:12PM, 14/05/2021</span>
-                        <span>by&nbsp;</span>
-                        <span class="user">user1</span>
-                    </div>
-                </div>
-                <div class="poll-item">
-                  <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
+                  {% if poll.voted %}<a class="poll-title voted" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>{% else %}<a class="poll-title" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>{% endif %}
                   <div class="count">
                       <span class="label">vote count:&nbsp;</span><span class="value">457</span>
                   </div>
@@ -110,29 +75,20 @@
                       <span>by&nbsp;</span>
                       <span class="user">user1</span>
                   </div>
-              </div>
-              <div class="poll-item">
-                <a class="poll-title" href="#">Lorem ipsum dolor sit amet consectetur</a>
-                <div class="count">
-                    <span class="label">vote count:&nbsp;</span><span class="value">457</span>
                 </div>
-                <div class="owner-info">
-                    <span class="label"><i class="bi bi-node-plus"></i>&nbsp;poll created at</span>
-                    <span class="date">10:12PM, 14/05/2021</span>
-                    <span>by&nbsp;</span>
-                    <span class="user">user1</span>
-                </div>
+                {% endfor %}
             </div>
-            </div>
+            {% if paginator.has_more_pages %}
             <div class="paginator">
-              <div class="inner">
-                  <ul>
-                      <a href="#"><li>&#8592;</li></a>
-                      <li>page 3 of 5</li>
-                      <a href="#"><li>&#8594;</li></a>
-                  </ul>
-              </div>
-          </div>
+                <div class="inner">
+                    <ul>
+                        {% if paginator.has_previous %}<a href="?page={{ paginator.prev_page_num }}"><li>&#8592;</li></a>{% endif %}
+                        <li>page&nbsp;{{ paginator.current_page }}&nbsp;of&nbsp;{{ paginator.total_pages }}</li>
+                        {% if paginator.has_next %}<a href="?page={{ paginator.next_page_num }}"><li>&#8594;</li></a>{% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <footer>

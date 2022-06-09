@@ -171,4 +171,32 @@ def polldetail(request, pk):
 
 
 def polls_all(request):
-    return render(request, 'polls/polls_all.html')
+    polls_all_raw = Poll.objects.filter(public=True, active=True).order_by('-added')
+    polls_paginator = Paginator(polls_all_raw, 5)
+    page_no = request.GET.get('page')
+    page_polls = polls_paginator.get_page(page_no)
+    browse_poll_context = dict()
+    polls_context = []
+    for poll in page_polls:
+        unit_context = dict()
+        unit_context['poll_id'] = poll.id
+        unit_context['poll_title'] = poll.title
+        unit_context['added'] = poll.added
+        unit_context['author'] = poll.author
+        unit_context['title'] = poll.pollvote.count()
+        users_vote = poll.pollvote.filter(voter=request.user)
+        if len(users_vote) > 0:
+            unit_context['voted'] = True
+        polls_context.append(unit_context)
+    
+    paginator_context = dict()
+    paginator_context['has_more_pages'] = page_polls.has_previous() or page_polls.has_next()
+    paginator_context['has_next'] = page_polls.has_next()
+    paginator_context['has_previous'] = page_polls.has_previous()
+    paginator_context['current_page'] = page_polls.number
+    paginator_context['total_pages'] = page_polls.paginator.num_pages
+    paginator_context['prev_page_num'] = page_polls.previous_page_number
+    paginator_context['next_page_num'] = page_polls.next_page_number
+    browse_poll_context['paginator'] = paginator_context
+    browse_poll_context['polls'] = polls_context
+    return render(request, 'polls/polls_all.html', context=browse_poll_context)
