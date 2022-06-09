@@ -8,7 +8,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="icon" href="{% static 'images/r.png' %}">
-    <title>View Forum</title>
+    <title>Error</title>
 </head>
 <body>
     <header>
@@ -156,43 +156,11 @@
             </div>
         </div>
         <div class="right-col">
-            <div class="forum-detail card">
-                <div class="heading">
-                    <i class="bi bi-chat-right me-1"></i>
-                    <span class="title">{{ topic_title }}</span>
-                </div>
+            <div class="no_access">
                 <div class="content">
-                    {% for post in posts %}
-                    <div class="forum-post">
-                        <div class="user">
-                            <div class="username">{{ post.author }}</div>
-                            <div class="post-time">{{ post.added|date:"h:i A, j M o" }}</div>
-                        </div>
-                        <div class="post-body">
-                            <p>{{ post.text }}</p>
-                            <div class="action">
-                                {% if post.updated %}<span class="last-edited"><i class="bi bi-arrow-clockwise"></i>last edited: {{ post.updated|date:"h:i:s A, j M o" }}</span>{% endif %}
-                                {% if post.own_post %}<a href="#"><i class="bi bi-pencil-fill"></i></a>{% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <div class="reply-wrapper">
-                        {% if lock_status %}
-                        <div class="locked_status_container">
-                            <div class="inner">
-                                <div>
-                                    <i class="bi bi-lock"></i>
-                                    <span>Forum Locked</span>
-                                </div>
-                            </div>
-                        </div>
-                        {% else %}
-                        <form action="{% url 'forums:forum_reply' forum_id %}" class="reply" method="POST">{% csrf_token %}
-                            <textarea name="reply-text" id="reply-text" class="textinput" placeholder="Reply Text"></textarea>
-                            <input type="submit" class="btn-1" value="Reply">
-                        </form>
-                        {% endif %}
+                    <div class="info">
+                        <div><i class="bi bi-exclamation-square"></i></div>
+                        <p>{{ error|default:'Error Occurred' }}</p>
                     </div>
                 </div>
             </div>

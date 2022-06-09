@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from forums.models import (ForumTopic, Post)
 from django.core.paginator import Paginator
+import datetime
 
 
 def forums_all(request):
@@ -42,6 +43,7 @@ def forumdetail(request, pk):
     forumViews = forum.views + 1
     ForumTopic.objects.filter(pk=pk).update(views=forumViews)
     forum_detail_context = dict()
+    forum_detail_context['forum_id'] = forum.id
     forum_detail_context['topic_title'] = forum.title
     forum_detail_context['lock_status'] = forum.locked
     forumPosts = forum.forumpost.all()
@@ -51,7 +53,11 @@ def forumdetail(request, pk):
         unit_context['author'] = post.post_author
         unit_context['added'] = post.added
         unit_context['text'] = post.post_text
-        if post.added != post.updated:
+        added = post.added.strftime("%H:%M:%S, %d %m, %Y")
+        updated = post.updated.strftime("%H:%M:%S, %d %m, %Y")
+        added_t = datetime.datetime.strptime(added,"%H:%M:%S, %d %m, %Y").time()
+        updated_t = datetime.datetime.strptime(updated,"%H:%M:%S, %d %m, %Y").time()
+        if added_t != updated_t:
             unit_context['updated'] = post.updated
         if post.post_author == request.user:
             unit_context['own_post'] = True
@@ -59,3 +65,18 @@ def forumdetail(request, pk):
     forum_detail_context['posts'] = posts_context
 
     return render(request, 'forums/forum_detail.html', context=forum_detail_context)
+
+
+def reply_to_forum(request, pk):
+    if request.method == 'GET':
+        return redirect('forums:forum_detail', pk=pk)
+    else:
+        reply_text = request.POST.get('reply-text', False)
+        if not reply_text:
+            return render(request, 'polls/error.html', {'error':'Cannot Post Empty Reply'})
+        forum_topic = get_object_or_404(ForumTopic, pk=pk)
+        if forum_topic.locked == True or forum_topic.active != True:
+            return render(request, 'polls/error.html', {'error':'Topic Is Locked/Inactive'})
+        post = Post.objects.create(post_text=reply_text, forum=forum_topic, post_author=request.user)
+        post.save()
+        return redirect('forums:forum_detail', pk=pk)
