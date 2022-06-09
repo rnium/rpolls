@@ -92,3 +92,23 @@ def reply_to_forum(request, pk):
         post = Post.objects.create(post_text=reply_text, forum=forum_topic, post_author=request.user)
         post.save()
         return redirect('forums:forum_detail', pk=pk)
+
+
+def forum_create(request):
+    if request.method == "GET":
+        polls_panel = get_polls_panel_context(request)
+        forums_panel = get_forum_panel_context(request)
+        return render(request, 'forums/forum_create.html', context={'recentpolls':polls_panel, 'forums':forums_panel})
+    else:
+        forum_kwargs = dict()
+        forum_kwargs['title'] = request.POST.get('topic')
+        forum_kwargs['author'] = request.user
+        new_forum = ForumTopic.objects.create(**forum_kwargs)
+        new_forum.save()
+        post_kwargs = dict()
+        post_kwargs['post_text'] = request.POST.get('post-text')
+        post_kwargs['forum'] = new_forum
+        post_kwargs['post_author'] = request.user
+        new_post = Post.objects.create(**post_kwargs)
+        new_post.save()
+        return redirect('forums:forum_detail', pk=new_forum.id)

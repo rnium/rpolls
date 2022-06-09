@@ -120,6 +120,12 @@
   body .main-container .right-col .forum-detail .forum-post .user {
     margin-bottom: 5px;
   }
+  body .main-container .right-col .no_access .info i {
+    font-size: 3rem !important;
+  }
+  body .main-container .right-col .no_access .info p {
+    font-size: 1rem !important;
+  }
   body .main-container .intro .banner img {
     height: auto !important;
     width: 90% !important;
