@@ -1000,6 +1000,37 @@ body .main-container .right-col .create-forum .form-wrapper form .submit {
   margin-top: 1em;
 }
 
+body .main-container .right-col .create-forum .form-wrapper form .submit .inner {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  justify-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+body .main-container .right-col .create-forum .form-wrapper form .submit .inner a {
+  padding: 0.2em 0.5em;
+  border-radius: 50%;
+  background-color: rgba(255, 221, 221, 0.5);
+  border: 2px solid #fcacac;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+body .main-container .right-col .create-forum .form-wrapper form .submit .inner a:hover {
+  background-color: #fdcfcf;
+}
+
+body .main-container .right-col .create-forum .form-wrapper form .submit .inner a i {
+  color: rgba(255, 0, 0, 0.76);
+}
+
 body .main-container .right-col .create-forum .form-wrapper form textarea {
   height: 25vh;
   overflow-x: hidden;

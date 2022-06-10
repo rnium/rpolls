@@ -7,7 +7,15 @@ from polls.views import (get_polls_panel_context, get_forum_panel_context)
 from django.contrib.auth.decorators import login_required
 
 
-@login_required()
+def renderError(request, error_msg):
+    context = {}
+    context['username'] = request.user.username
+    context['recentpolls'] = get_polls_panel_context(request)
+    context['forums'] = get_forum_panel_context(request)
+    context['error'] = error_msg
+    return render(request, 'polls/error.html', context=context)
+
+@login_required
 def forums_all(request):
     forums_raw = ForumTopic.objects.all().order_by('-added')
     paginator_forums = Paginator(forums_raw, 10)
@@ -45,7 +53,7 @@ def forums_all(request):
     return render(request, 'forums/forums_all.html', context=forums_all_context)
 
 
-@login_required()
+@login_required
 def forumdetail(request, pk):
     forum = get_object_or_404(ForumTopic, pk=pk, active=True)
     forumViews = forum.views + 1
@@ -79,7 +87,7 @@ def forumdetail(request, pk):
     return render(request, 'forums/forum_detail.html', context=forum_detail_context)
 
 
-@login_required()
+@login_required
 def reply_to_forum(request, pk):
     if request.method == 'GET':
         return redirect('forums:forum_detail', pk=pk)
@@ -104,7 +112,7 @@ def reply_to_forum(request, pk):
         return redirect('forums:forum_detail', pk=pk)
 
 
-@login_required()
+@login_required
 def forum_create(request):
     if request.method == "GET":
         polls_panel = get_polls_panel_context(request)
@@ -126,6 +134,48 @@ def forum_create(request):
         return redirect('forums:forum_detail', pk=new_forum.id)
 
 
-@login_required()
+@login_required
 def edit_post(request):
-    return HttpResponse(str(request.POST.get('post_id')))
+    if request.method == 'GET':
+        return redirect('forums:forum_all')
+    else:
+        post_pk = request.POST.get('post_id')
+        if not bool(post_pk):
+            return redirect('forums:forum_all')
+        try:
+            post = Post.objects.get(pk=post_pk)
+        except Post.DoesNotExist:
+            return renderError(request, 'Post Not Found')  
+        if post.post_author != request.user:
+            return renderError(request, 'Unauthorized')
+        edit_post_context = {}
+        edit_post_context['username'] = request.user.username
+        edit_post_context['recentpolls'] = get_polls_panel_context(request)
+        edit_post_context['forum_panel'] = get_forum_panel_context(request)
+        edit_post_context['forum_title'] = post.forum.title
+        edit_post_context['post_id'] = post.id
+        edit_post_context['prev_post_text'] = post.post_text
+        return render(request, 'forums/forum_post_edit.html', context=edit_post_context)
+
+
+@login_required
+def update_post(request):
+    return HttpResponse('responded')
+
+
+@login_required
+def delete_post(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return renderError(request, 'Post Not Found')
+    if post.post_author != request.user:
+        return renderError(request, 'Unauthorized')
+    forum = post.forum
+    posts = forum.forumpost.all().order_by('added')
+    if len(posts) == 1 and post.post_author == forum.author:
+        forum.delete()
+    if len(posts) > 1 and posts[0].post_author == forum.author:
+        return renderError(request, 'Not Permitted')
+    post.delete()
+    return redirect('forums:forum_all')
