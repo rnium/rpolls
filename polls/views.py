@@ -293,5 +293,63 @@ def votes_history(request):
     paginator_context['prev_page_num'] = page_votes.previous_page_number
     paginator_context['next_page_num'] = page_votes.next_page_number
     vote_history_context['paginator'] = paginator_context
-    
     return render(request, 'polls/vote_history.html', context=vote_history_context)
+
+
+@login_required()
+def vote_now(request, pk):
+    try:
+        poll = Poll.objects.get(pk=pk)
+    except Poll.DoesNotExist:
+        context = {}
+        context['recentpolls'] = get_polls_panel_context(request)
+        context['forums'] = get_forum_panel_context(request)
+        context['error'] = 'Poll Not Found'
+        context['username'] = request.user.username
+        return render(request, 'polls/error.html', context=context)
+    if not poll.visible:
+        context = {}
+        context['recentpolls'] = get_polls_panel_context(request)
+        context['forums'] = get_forum_panel_context(request)
+        context['error'] = 'Only Admins Can Access'
+        context['username'] = request.user.username
+        return render(request, 'polls/error.html', context=context)
+    if not poll.active:
+        context = {}
+        context['recentpolls'] = get_polls_panel_context(request)
+        context['forums'] = get_forum_panel_context(request)
+        context['error'] = 'Inactive Poll'
+        context['username'] = request.user.username
+        return render(request, 'polls/error.html', context=context)
+    if request.method == 'GET':
+        votes_context = dict()
+        votes_context['recentpolls'] = get_polls_panel_context(request)
+        votes_context['forums'] = get_forum_panel_context(request)
+        votes_context['username'] = request.user.username
+        votes_context['poll_id'] = poll.id
+        votes_context['poll_title'] = poll.title
+        votes_context['poll_banner_url'] = poll.banner.url
+        choices_raw = poll.choice.all()
+        choices = list()
+        for choice in choices_raw:
+            unit_context = dict()
+            unit_context['choice_id'] = choice.id
+            unit_context['choice_text'] = choice.choicetext
+            choices.append(unit_context)
+        votes_context['choices'] = choices
+        return render(request, 'polls/votenow.html', context=votes_context)
+    else:
+        
+        choice_id = request.POST.get('vote')
+        try:
+            choice = Choice.objects.get(pk=choice_id)
+        except Choice.DoesNotExist:
+            context = {}
+            context['recentpolls'] = get_polls_panel_context(request)
+            context['forums'] = get_forum_panel_context(request)
+            context['error'] = 'Invalid Choice'
+            context['username'] = request.user.username
+            return render(request, 'polls/error.html', context=context)
+        new_vote = Vote.objects.create(choice=choice, poll=poll, voter=request.user)
+        new_vote.save()
+        return redirect('polls:polldetails', pk=poll.id)
