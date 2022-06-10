@@ -62,13 +62,13 @@
                 <div class="poll-item">
                   {% if poll.voted %}<a class="poll-title voted" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>{% else %}<a class="poll-title" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>{% endif %}
                   <div class="count">
-                      <span class="label">vote count:&nbsp;</span><span class="value">457</span>
+                      <span class="label">vote count:&nbsp;</span><span class="value">{{ poll.vote_count }}</span>
                   </div>
                   <div class="owner-info">
                       <span class="label"><i class="bi bi-node-plus"></i>&nbsp;poll created at</span>
-                      <span class="date">10:12PM, 14/05/2021</span>
+                      <span class="date">{{ poll.added }}</span>
                       <span>by&nbsp;</span>
-                      <span class="user">user1</span>
+                      <span class="user">{{ poll.author }}</span>
                   </div>
                 </div>
                 {% endfor %}

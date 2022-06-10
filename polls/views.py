@@ -207,6 +207,7 @@ def polls_all(request):
         unit_context = dict()
         unit_context['poll_id'] = poll.id
         unit_context['poll_title'] = poll.title
+        unit_context['vote_count'] = poll.pollvote.count()
         unit_context['added'] = poll.added
         unit_context['author'] = poll.author
         unit_context['title'] = poll.pollvote.count()
