@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from user.views import (register, userlogin)
+from user.views import (register, userlogin, userlogout)
 from polls.views import homepageview
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     path('forums/', include('forums.urls')),
     path('register/', register, name='register'),
     path('login/', userlogin, name='login'),
+    path('logout/', userlogout, name='logout'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

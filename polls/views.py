@@ -47,6 +47,7 @@ def get_polls_panel_context(request):
 
 
 def pollshomepage(request):
+    username = request.user.username
     recentpolls_context = get_polls_panel_context(request)
     # forums panel context
     recentforums_context = get_forum_panel_context(request)
@@ -118,7 +119,7 @@ def pollshomepage(request):
         pass
 
     return render(request, 'polls/index.html', context={'recentpolls': recentpolls_context, 'forums': recentforums_context, 
-                                                        'recentpolls_user': recentpolls_user_context,
+                                                        'recentpolls_user': recentpolls_user_context, 'username':username,
                                                         'paginator': paginator_context, 'stat': stat_context})
 
 

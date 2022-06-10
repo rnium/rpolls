@@ -42,9 +42,9 @@
                 <div class="account d-flex me-4">
                     <div class="profile d-flex my-auto me-3">
                         <i class="bi bi-person-circle"></i>
-                        <span class="username-viewonly ms-1">username</span>
+                        <span class="username-viewonly ms-1">{{ username }}</span>
                     </div>
-                    <form action="#" method="POST">
+                    <form action="{% url 'logout' %}" method="POST"> {% csrf_token %}
                         <input type="submit" class="btn-1" value="Logout">
                     </form>
                 </div>

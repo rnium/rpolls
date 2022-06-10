@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import (login, authenticate, logout)
 
-from django.http import HttpResponse
 
 def register(request):
     if request.method == "GET":
@@ -45,3 +44,11 @@ def userlogin(request):
             return redirect('polls:index')
         else:
             return render(request, 'user/login.html', context={'error': 'invalid credentials'})
+
+
+def userlogout(request):
+    if request.user.is_authenticated:
+        logout(request)
+    else:
+        return redirect('login')
+    return redirect('homepage')
