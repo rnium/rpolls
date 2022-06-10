@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from forums.models import (ForumTopic, Post)
 from django.core.paginator import Paginator
@@ -71,6 +72,7 @@ def forumdetail(request, pk):
             unit_context['updated'] = post.updated
         if post.post_author == request.user:
             unit_context['own_post'] = True
+            unit_context['post_id'] = post.id
         posts_context.append(unit_context)
     forum_detail_context['posts'] = posts_context
 
@@ -122,3 +124,8 @@ def forum_create(request):
         new_post = Post.objects.create(**post_kwargs)
         new_post.save()
         return redirect('forums:forum_detail', pk=new_forum.id)
+
+
+@login_required()
+def edit_post(request):
+    return HttpResponse(str(request.POST.get('post_id')))

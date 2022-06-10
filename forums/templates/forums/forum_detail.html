@@ -116,9 +116,9 @@
                             <div class="action">
                                 {% if post.updated %}<span class="last-edited"><i class="bi bi-arrow-clockwise"></i>last edited: {{ post.updated|date:"h:i:s A, j M o" }}</span>{% endif %}
                                 {% if post.own_post %}
-                                <form action="#" id="edit_post" style="display:inline;">
-                                    <input type="hidden" name="" value="32">
-                                    <a href="javascript:{}" onclick="document.getElementById('edit_post').submit()"><i class="bi bi-pencil-fill"></i></a>
+                                <form action="{% url 'forums:post_edit' %}" id="edit_post{{ post.post_id }}" style="display:inline;" method="POST"> {% csrf_token %}
+                                    <input type="hidden" name="post_id" value="{{ post.post_id }}">
+                                    <a href="javascript:{}" onclick="document.getElementById('edit_post{{ post.post_id }}').submit()"><i class="bi bi-pencil-fill"></i></a>
                                 </form>
                                 {% endif %}
                             </div>
