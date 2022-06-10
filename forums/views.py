@@ -3,8 +3,10 @@ from forums.models import (ForumTopic, Post)
 from django.core.paginator import Paginator
 import datetime
 from polls.views import (get_polls_panel_context, get_forum_panel_context)
+from django.contrib.auth.decorators import login_required
 
 
+@login_required()
 def forums_all(request):
     forums_raw = ForumTopic.objects.all().order_by('-added')
     paginator_forums = Paginator(forums_raw, 10)
@@ -42,6 +44,7 @@ def forums_all(request):
     return render(request, 'forums/forums_all.html', context=forums_all_context)
 
 
+@login_required()
 def forumdetail(request, pk):
     forum = get_object_or_404(ForumTopic, pk=pk, active=True)
     forumViews = forum.views + 1
@@ -74,6 +77,7 @@ def forumdetail(request, pk):
     return render(request, 'forums/forum_detail.html', context=forum_detail_context)
 
 
+@login_required()
 def reply_to_forum(request, pk):
     if request.method == 'GET':
         return redirect('forums:forum_detail', pk=pk)
@@ -98,6 +102,7 @@ def reply_to_forum(request, pk):
         return redirect('forums:forum_detail', pk=pk)
 
 
+@login_required()
 def forum_create(request):
     if request.method == "GET":
         polls_panel = get_polls_panel_context(request)

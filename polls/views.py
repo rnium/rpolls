@@ -4,6 +4,7 @@ from polls.models import (Poll, Choice, Vote)
 from forums.models import (ForumTopic, Post)
 from django.http import HttpResponse
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 def homepageview(request):
     if request.user.is_authenticated:
@@ -46,6 +47,7 @@ def get_polls_panel_context(request):
     return recentpolls_context
 
 
+@login_required()
 def pollshomepage(request):
     username = request.user.username
     recentpolls_context = get_polls_panel_context(request)
@@ -123,6 +125,7 @@ def pollshomepage(request):
                                                         'paginator': paginator_context, 'stat': stat_context})
 
 
+@login_required()
 def polldetail(request, pk):
     polldetail_context = dict()
     try:
@@ -132,16 +135,19 @@ def polldetail(request, pk):
         context['recentpolls'] = get_polls_panel_context(request)
         context['forums'] = get_forum_panel_context(request)
         context['error'] = 'Poll Not Found'
+        context['username'] = request.user.username
         return render(request, 'polls/error.html', context=context)
     if not poll.visible:
         context = {}
         context['recentpolls'] = get_polls_panel_context(request)
         context['forums'] = get_forum_panel_context(request)
         context['error'] = 'Only Admins Can Access'
+        context['username'] = request.user.username
         return render(request, 'polls/error.html', context=context)
 
     polldetail_context['recentpolls'] = get_polls_panel_context(request)
     polldetail_context['forums'] = get_forum_panel_context(request)
+    polldetail_context['username'] = request.user.username
     pollViews = poll.views + 1
     Poll.objects.filter(pk=pk).update(views=pollViews)
     polldetail_context['poll_id'] = poll.id
@@ -188,12 +194,14 @@ def polldetail(request, pk):
     return render(request, 'polls/poll_detail.html', context=polldetail_context)
 
 
+@login_required()
 def polls_all(request):
     polls_all_raw = Poll.objects.filter(public=True, active=True, visible=True).order_by('-added')
     polls_paginator = Paginator(polls_all_raw, 5)
     page_no = request.GET.get('page')
     page_polls = polls_paginator.get_page(page_no)
     browse_poll_context = dict()
+    browse_poll_context['username'] = request.user.username
     polls_context = []
     for poll in page_polls:
         unit_context = dict()
@@ -220,11 +228,13 @@ def polls_all(request):
     return render(request, 'polls/polls_all.html', context=browse_poll_context)
 
 
+@login_required()
 def create_poll(request):
     polls_panel = get_polls_panel_context(request)
     forums_panel = get_forum_panel_context(request)
+    username = request.user.username
     if request.method == "GET":
-        return render(request, 'polls/poll_create.html', context={'recentpolls':polls_panel, 'forums':forums_panel})
+        return render(request, 'polls/poll_create.html', context={'username':username,'recentpolls':polls_panel, 'forums':forums_panel})
     else:
         poll_kwargs = dict()
         poll_kwargs['title'] = request.POST.get('poll-title')
@@ -246,10 +256,11 @@ def create_poll(request):
             choices.append(Choice(choicetext=choice_text, poll=new_poll))
         Choice.objects.bulk_create(choices)
         poll_link = request.build_absolute_uri(reverse('polls:polldetails', args=(new_poll.id,)))
-        confirm_page_context = {'recentpolls':polls_panel, 'forums':forums_panel, 'poll_id':new_poll.id, 'poll_link':poll_link}
+        confirm_page_context = {'username':username, 'recentpolls':polls_panel, 'forums':forums_panel, 'poll_id':new_poll.id, 'poll_link':poll_link}
         return render(request, 'polls/poll_creation_info.html', context=confirm_page_context)
 
 
+@login_required()
 def votes_history(request):
     vote_history_context = dict()
     vote_history_context['username'] = request.user.username 
