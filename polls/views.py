@@ -248,4 +248,38 @@ def create_poll(request):
         poll_link = request.build_absolute_uri(reverse('polls:polldetails', args=(new_poll.id,)))
         confirm_page_context = {'recentpolls':polls_panel, 'forums':forums_panel, 'poll_id':new_poll.id, 'poll_link':poll_link}
         return render(request, 'polls/poll_creation_info.html', context=confirm_page_context)
+
+
+def votes_history(request):
+    vote_history_context = dict()
+    vote_history_context['username'] = request.user.username 
+    votes_raw = Vote.objects.filter(voter=request.user, poll__visible=True).order_by('-vote_time')
+    if len(votes_raw) == 0:
+        vote_history_context['no_votes'] = True
+        return render(request, 'polls/vote_history.html', context=vote_history_context)
+    votes_paginator = Paginator(votes_raw, 2)
+    page_no = request.GET.get('page')
+    page_votes = votes_paginator.get_page(page_no)
+    votes = list()
+    for vote in page_votes:
+        unit_context = dict()
+        pollObj = vote.poll
+        unit_context['poll_id'] = pollObj.id
+        unit_context['poll_title'] = pollObj.title
+        unit_context['poll_vote_count'] = pollObj.pollvote.count()
+        unit_context['poll_added'] = pollObj.added
+        unit_context['poll_author'] = pollObj.author
+        unit_context['my_vote_time'] = vote.vote_time
+        votes.append(unit_context)
+    vote_history_context['votes'] = votes
+    paginator_context = dict()
+    paginator_context['has_more_pages'] = page_votes.has_previous() or page_votes.has_next()
+    paginator_context['has_next'] = page_votes.has_next()
+    paginator_context['has_previous'] = page_votes.has_previous()
+    paginator_context['current_page'] = page_votes.number
+    paginator_context['total_pages'] = page_votes.paginator.num_pages
+    paginator_context['prev_page_num'] = page_votes.previous_page_number
+    paginator_context['next_page_num'] = page_votes.next_page_number
+    vote_history_context['paginator'] = paginator_context
     
+    return render(request, 'polls/vote_history.html', context=vote_history_context)
