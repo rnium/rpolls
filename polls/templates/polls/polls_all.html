@@ -11,52 +11,47 @@
     <title>Browse polls</title>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <div class="container-fluid">
-              <a class="navbar-brand ms-5 pe-3" href="#"><span class="r">r</span>Polls</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item me-1">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Poll
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Create</a></li>
-                      <li><a class="dropdown-item" href="#">Browse</a></li>
-                      <li><a class="dropdown-item" href="#">My Polls</a></li>
-                    </ul>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Forum
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Start New Topic</a></li>
-                      <li><a class="dropdown-item" href="#">Browse</a></li>
-                    </ul>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Vote history</a>
-                  </li>
-                </ul>
-                <div class="account d-flex me-4">
-                    <div class="profile d-flex my-auto me-3">
-                        <i class="bi bi-person-circle"></i>
-                        <span class="username-viewonly ms-1">username</span>
-                    </div>
-                  <button class="btn-1">Logout</button>
+  <header>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand ms-5 pe-3" href="{% url 'homepage' %}"><span class="r">r</span>Polls</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item me-1">
+                <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'polls:browse' %}">Polls</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'polls:create_poll' %}">Create poll</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'forums:forum_all' %}">Forums</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'forums:forum_create' %}">New forum</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'polls:votes_history' %}">Vote history</a>
+              </li>
+            </ul>
+            <div class="account d-flex me-4">
+                <div class="profile d-flex my-auto me-3">
+                    <i class="bi bi-person-circle"></i>
+                    <span class="username-viewonly ms-1">{{ username }}</span>
                 </div>
-              </div>
+                <form action="{% url 'logout' %}" method="POST"> {% csrf_token %}
+                    <input type="submit" class="btn-1" value="Logout">
+                </form>
             </div>
-          </nav>
-    </header>
+          </div>
+        </div>
+      </nav>
+  </header>
     <div class="main-container">
         <div class="trending-global-all">
             <div class="heading">

@@ -13,6 +13,7 @@ def forums_all(request):
     forums_all_context = dict()
     forums_all_context['forum_panel'] = get_forum_panel_context(request)
     forums_all_context['recentpolls'] = get_polls_panel_context(request)
+    forums_all_context['username'] = request.user.username
     forum_topics = []
     for forum in forums:
         unit_context = dict()
@@ -48,6 +49,7 @@ def forumdetail(request, pk):
     forum_detail_context = dict()
     forum_detail_context['forum_panel'] = get_forum_panel_context(request)
     forum_detail_context['recentpolls'] = get_polls_panel_context(request)
+    forum_detail_context['username'] = request.user.username
     forum_detail_context['forum_id'] = forum.id
     forum_detail_context['topic_title'] = forum.title
     forum_detail_context['lock_status'] = forum.locked
@@ -80,13 +82,15 @@ def reply_to_forum(request, pk):
         if not reply_text:
             polls_panel_context = get_polls_panel_context(request)
             forums_panel_context = get_forum_panel_context(request)
-            context = {'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Cannot Post Empty Reply'}
+            username = request.user.username
+            context = {'username':username,'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Cannot Post Empty Reply'}
             return render(request, 'polls/error.html', context=context)
         forum_topic = get_object_or_404(ForumTopic, pk=pk)
         if forum_topic.locked == True or forum_topic.active != True:
             polls_panel_context = get_polls_panel_context(request)
             forums_panel_context = get_forum_panel_context(request)
-            context = {'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Topic Is Locked/Inactive'}
+            username = request.user.username
+            context = {'username':username, 'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Topic Is Locked/Inactive'}
             return render(request, 'polls/error.html', context=context)
             
         post = Post.objects.create(post_text=reply_text, forum=forum_topic, post_author=request.user)
@@ -98,7 +102,8 @@ def forum_create(request):
     if request.method == "GET":
         polls_panel = get_polls_panel_context(request)
         forums_panel = get_forum_panel_context(request)
-        return render(request, 'forums/forum_create.html', context={'recentpolls':polls_panel, 'forums':forums_panel})
+        username = request.user.username
+        return render(request, 'forums/forum_create.html', context={'username':username,'recentpolls':polls_panel, 'forums':forums_panel})
     else:
         forum_kwargs = dict()
         forum_kwargs['title'] = request.POST.get('topic')
