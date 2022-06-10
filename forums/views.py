@@ -175,7 +175,10 @@ def delete_post(request, pk):
     posts = forum.forumpost.all().order_by('added')
     if len(posts) == 1 and post.post_author == forum.author:
         forum.delete()
-    if len(posts) > 1 and posts[0].post_author == forum.author:
+    first_post = posts[0]
+    is_the_first_post = first_post == post
+    is_first_post_author_forum_author = first_post.post_author == forum.author
+    if len(posts) > 1 and is_first_post_author_forum_author and is_the_first_post:
         return renderError(request, 'Not Permitted')
     post.delete()
     return redirect('forums:forum_all')
