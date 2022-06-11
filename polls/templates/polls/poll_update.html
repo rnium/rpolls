@@ -105,7 +105,7 @@
                     <span class="title">Update Poll</span>
                 </div>
                 <div class="wrapper">
-                    <form action="{% url 'polls:update_poll' poll_id %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                    <form action="{% url 'polls:edit_poll' poll_id %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
                         <div class="basic-info">
                             <div class="title">
                                 <label for="poll-title">Poll title</label>

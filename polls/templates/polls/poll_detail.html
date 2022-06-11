@@ -103,7 +103,7 @@
                 <div class="content">
                     <div class="poll-heading">
                         <div class="banner"><img src="{{ poll_banner_url }}" alt=""></div>
-                        <div class="title">{{ poll_title }}</div>
+                        <div class="title">{{ poll_title }}{% if editable %}<a href="{% url 'polls:edit_poll' poll_id %}"><i class="bi bi-pencil-fill"></i></a>{% endif %}</div>
                     </div>
                     <div class="pool-info">
                         <div class="pool-choices">
@@ -159,10 +159,6 @@
                                     <button id="ctc">copy</button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="my-action">
-                            <a href="#" type="submit" class="btn-1 link-btn me-1">Update poll</a>
-                            <a href="#" type="submit" class="btn-1 link-btn">Update vote</a>
                         </div>
                     </div>
                 </div>
