@@ -279,9 +279,10 @@ def update_poll(request, pk):
         try:
             poll = Poll.objects.get(pk=pk)
         except Poll.DoesNotExist:
-            return renderError(request, "Poll Not Found")
-        if poll.author != request.user or not request.user.is_staff:
-            return renderError(request,'Access Denied')
+            return renderError(request, "(404) Poll Not Found")
+        not_staff = not request.user.is_staff
+        if poll.author != request.user and not_staff:
+            return renderError(request,'(403) Access Denied')
         choices_raw = poll.choice.all()
         update_poll_context = dict()
         update_poll_context['username'] = request.user.username
@@ -307,8 +308,11 @@ def update_poll(request, pk):
             poll_id = request.POST.get('poll_id')
             poll = Poll.objects.get(pk=poll_id)
         except Poll.DoesNotExist:
-            return renderError(request, "Invalid Form")
+            return renderError(request, "(400) Invalid Form")
         prev_choices_id = [i for i in form_data if i.isdigit()]
+        old_all_choices = poll.choice.all()
+        old_choices_id = [c.id for c in old_all_choices]
+        deleted_choices_id = [i for i in old_choices_id if str(i) not in prev_choices_id]
         if len(prev_choices_id) > 0:
             for choice_id in prev_choices_id:
                 try:
@@ -334,6 +338,9 @@ def update_poll(request, pk):
         poll.public = bool(visibility)
         poll.active = bool(active_status)
         poll.save()
+        for deleted_pk in deleted_choices_id:
+            choice = Choice.objects.get(pk=deleted_pk)
+            choice.delete()
         return redirect('polls:polldetails', pk=poll.id)
 
 
