@@ -160,6 +160,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% if votable_status %}<div class="my-action"><a href="{% url 'polls:vote' poll_id %}" type="submit" class="btn-1 link-btn me-1">Vote Now</a></div>{% endif %}
                     </div>
                 </div>
             </div>

@@ -142,20 +142,14 @@ def polldetail(request, pk):
     try:
         poll = Poll.objects.get(pk=pk)
     except Poll.DoesNotExist:
-        context = {}
-        context['recentpolls'] = get_polls_panel_context(request)
-        context['forums'] = get_forum_panel_context(request)
-        context['error'] = 'Poll Not Found'
-        context['username'] = request.user.username
-        return render(request, 'polls/error.html', context=context)
+        return renderError(request, '(404) Poll Not Found')
     if not poll.visible:
-        context = {}
-        context['recentpolls'] = get_polls_panel_context(request)
-        context['forums'] = get_forum_panel_context(request)
-        context['error'] = 'Only Admins Can Access'
-        context['username'] = request.user.username
-        return render(request, 'polls/error.html', context=context)
-
+        return renderError(request, 'Only Admins Can Access')
+    user_voted = bool(poll.pollvote.filter(voter=request.user).count())
+    view_permitted_user = (poll.author == request.user) or (request.user.is_staff)
+    if poll.active and not user_voted and not view_permitted_user:
+        return redirect('polls:vote', pk=pk)
+    polldetail_context['votable_status'] = view_permitted_user and (not user_voted) and (poll.active)
     polldetail_context['recentpolls'] = get_polls_panel_context(request)
     polldetail_context['forums'] = get_forum_panel_context(request)
     polldetail_context['username'] = request.user.username
@@ -165,6 +159,7 @@ def polldetail(request, pk):
     polldetail_context['poll_url'] = request.build_absolute_uri()
     polldetail_context['poll_title'] = poll.title
     polldetail_context['poll_author'] = poll.author
+    polldetail_context['editable'] = (poll.author == request.user) or (request.user.is_staff)
     polldetail_context['poll_added'] = poll.added
     polldetail_context['poll_views'] = pollViews
     polldetail_context['is_active_poll'] = poll.active
