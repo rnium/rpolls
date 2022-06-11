@@ -152,6 +152,7 @@ def edit_post(request):
         edit_post_context['username'] = request.user.username
         edit_post_context['recentpolls'] = get_polls_panel_context(request)
         edit_post_context['forum_panel'] = get_forum_panel_context(request)
+        edit_post_context['forum_id'] = post.forum.id
         edit_post_context['forum_title'] = post.forum.title
         edit_post_context['post_id'] = post.id
         edit_post_context['prev_post_text'] = post.post_text
@@ -160,7 +161,23 @@ def edit_post(request):
 
 @login_required
 def update_post(request):
-    return HttpResponse('responded')
+    if request.method == 'GET':
+        return redirect('forums:forum_all')
+    else:
+        post_pk = request.POST.get('pk')
+        try:
+            post = Post.objects.get(pk=post_pk)
+        except Post.DoesNotExist:
+            return renderError(request, "Invalid Request")
+        if post.post_author != request.user:
+            return renderError(request, "Unauthorized")
+        new_post_text = request.POST.get('post-text')
+        if not bool(new_post_text):
+            return renderError(request, "No Input Text")
+        post.post_text = new_post_text
+        post.save()
+        forum_pk = request.POST.get('forum_pk')
+        return redirect('forums:forum_detail', pk=forum_pk)
 
 
 @login_required

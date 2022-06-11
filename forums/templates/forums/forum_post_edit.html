@@ -105,12 +105,14 @@
                     <span class="title">Edit Post</span>
                 </div>
                 <div class="form-wrapper">
-                    <form action="#">
+                    <form action="{% url 'forums:post_update' %}" method="POST"> {% csrf_token %}
                         <div class="fi t-name mb-3">
                             <h5>{{ forum_title }}</h5>
                         </div>
                         <div class="fi post-body">
                             <textarea name="post-text" class="textinput" id="post-text" placeholder="Post Body" required="">{{ prev_post_text }}</textarea>
+                            <input type="hidden" name="pk" value="{{ post_id }}">
+                            <input type="hidden" name="forum_pk" value="{{ forum_id }}">
                         </div>
                         <div class="fi submit">
                             <div class="inner">
