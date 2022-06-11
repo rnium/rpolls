@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'images/r.png' %}">
+    <title>Update poll</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand ms-5 pe-3" href="{% url 'homepage' %}"><span class="r">r</span>Polls</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item me-1">
+                    <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'polls:browse' %}">Polls</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'polls:create_poll' %}">Create poll</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'forums:forum_all' %}">Forums</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'forums:forum_create' %}">New forum</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'polls:votes_history' %}">Vote history</a>
+                  </li>
+                </ul>
+                <div class="account d-flex me-4">
+                    <div class="profile d-flex my-auto me-3">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="username-viewonly ms-1">{{ username }}</span>
+                    </div>
+                    <form action="{% url 'logout' %}" method="POST"> {% csrf_token %}
+                        <input type="submit" class="btn-1" value="Logout">
+                    </form>
+                </div>
+              </div>
+            </div>
+          </nav>
+    </header>
+    <div class="main-container">
+        <div class="left-col">
+            <div class="recent-polls card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-activity"></i></span>
+                    <span class="title">Most Recent</span>
+                </div>
+                <div class="content">
+                    {% for poll in recentpolls %}
+                    <div class="poll-item">
+                        <a class="poll-title" href="{% url 'polls:polldetails' poll.poll_id %}">{{ poll.poll_title }}</a>
+                        <div class="count">
+                            <span class="label">vote count:&nbsp;</span><span class="value">{{ poll.vote_count }}</span>
+                        </div>
+                        {% if poll.vote_count%}
+                        <div class="last-vote">
+                            <span class="label"><i class="bi bi-check-all"></i></span>
+                            <span class="date">{{ poll.last_vote_time|date:"h:i A, j M o" }}</span>
+                            <span class="user">by {{ poll.last_vote_voter }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <a href="{% url 'polls:browse' %}" class="btn-1 link-btn">View All</a>
+                </div>
+            </div>
+            <div class="community-forum card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-chat-right"></i></span>
+                    <span class="title">Forums</span>
+                </div>
+                <div class="content">
+                    {% for forum in forums %}
+                    <div class="forum-post">
+                        <a class="post-title" href="{% url 'forums:forum_detail' forum.forum_id %}">{{ forum.forum_title }}</a>
+                        <div class="last-post">
+                            <span class="label"><i class="bi bi-arrow-90deg-down"></i></span>
+                            <span class="date">{{ forum.last_post_time|date:"h:i A, j M o" }}</span>
+                            <span class="user">by {{ forum.last_post_user }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <a href="{% url 'forums:forum_all' %}" class="btn-1 link-btn">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="right-col">
+            <div class="createpoll card">
+                <div class="heading">
+                    <span class="icon me-1"><i class="bi bi-node-plus"></i></span>
+                    <span class="title">Update Poll</span>
+                </div>
+                <div class="wrapper">
+                    <form action="{% url 'polls:update_poll' poll_id %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                        <div class="basic-info">
+                            <div class="title">
+                                <label for="poll-title">Poll title</label>
+                                <input type='hidden' name="poll_id" value="{{ poll_id }}">
+                                <input type="text" class="textinput" id="poll-title" name="poll-title" placeholder="Enter poll title" value="{{ poll_title }}" required="">
+                            </div>
+                            <div class="banner">
+                                <label for="poll-banner">Poll banner</label>
+                                <input type="file" class="form-control" id="poll-banner" name="poll-banner">
+                            </div>
+                            <div class="current_banner">current: <a href="{{ poll_banner_url }}" target="_blank">{{ poll_banner_filename }}</a></div>
+                            <div class="visibility">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="visibility" value="public" {% if poll_is_public %}checked{% endif %}>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Public Poll</label>
+                                </div>
+                            </div>
+                            <div class="active_status">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="flexSwitch2" name="active_status" value="active" {% if poll_is_active %}checked{% endif %}>
+                                    <label class="form-check-label" for="flexSwitch2">Active Status</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="choices-wrapper card">
+                            <div class="heading">
+                                <span class="title">Poll Choices</span>
+                            </div>
+                            <div id="choices">
+                                {% for choice in choices %}
+                                <input type="text" class="textinput choiceinput" placeholder="choice text" name="{{ choice.choice_id }}" value="{{ choice.choice_text }}" required="">
+                                {% endfor %}  
+                            </div>
+                            <div class="actions">
+                                <div class="btn-container">
+                                    <a class="form-btn" id="add-choice">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span>Add Choice</span>
+                                    </a>
+                                </div>
+                                <div class="btn-container">
+                                    <a class="form-btn" id="remove-choice">
+                                        <i class="bi bi-dash-circle"></i>
+                                        <span>Remove Choice</span>
+                                    </a>
+                                </div>
+                            </div>
+    
+                        </div>
+                        <div class="submit-form">
+                            <input type="submit" class="btn-1" value="update">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="upper">
+            <div class="col-1">
+                <div class="site-name">
+                    <span class="r">r</span>Polls</a>
+                </div>
+            </div>
+            <div class="vl"></div>
+            <div class="col-2">
+                <a href="#">About</a>
+                <a href="#">Features</a>
+                <a href="#"><i class="bi bi-github"></i>Project Sourcecode</a>
+            </div>
+            <div class="vl"></div>
+            <div class="col-3">
+                <a href="#"><i class="bi bi-chat-square-dots-fill"></i>Contact us</a>
+                <a href="#"><i class="bi bi-flag-fill"></i>Report an issue</a> 
+            </div>
+        </div>
+    </footer>
+    <script src="{% static '/scripts/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

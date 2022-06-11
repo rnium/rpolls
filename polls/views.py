@@ -300,6 +300,11 @@ def update_poll(request, pk):
         return render(request, 'polls/poll_update.html', context=update_poll_context)
     else:
         form_data = list(request.POST)
+        try:
+            poll_id = request.POST.get('poll_id')
+            poll = Poll.objects.get(pk=poll_id)
+        except Poll.DoesNotExist:
+            return renderError(request, "Invalid Form")
         prev_choices_id = [i for i in form_data if i.isdigit()]
         if len(prev_choices_id) > 0:
             for choice_id in prev_choices_id:
@@ -309,8 +314,25 @@ def update_poll(request, pk):
                     return renderError(request, "Invalid Form")
                 choice.choicetext = request.POST.get(choice_id)
                 choice.save()
-        new_choices = [i for i in form_data if i.startswith('choice')]
-        return HttpResponse(new_choices)
+        new_choices_name = [i for i in form_data if i.startswith('choice')]
+        new_choices = []
+        for name in new_choices_name:
+            choice_text = request.POST.get(name)
+            if not bool(choice_text):
+                return renderError(request, "Invalid Form")
+            new_choices.append(Choice(choicetext=choice_text, poll=poll))
+        Choice.objects.bulk_create(new_choices)
+        poll.title = request.POST.get('poll-title')
+        banner_img = request.FILES.get('poll-banner', False)
+        if bool(banner_img):
+            poll.banner = banner_img
+        visibility = request.POST.get('visibility', False)
+        active_status = request.POST.get('active_status', False)
+        poll.public = bool(visibility)
+        poll.active = bool(active_status)
+        poll.save()
+        return redirect('polls:polldetails', pk=poll.id)
+
 
 @login_required()
 def votes_history(request):
