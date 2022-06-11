@@ -118,7 +118,7 @@
                                 {% if post.own_post %}
                                 <form action="{% url 'forums:post_edit' %}" id="edit_post{{ post.post_id }}" style="display:inline;" method="POST"> {% csrf_token %}
                                     <input type="hidden" name="post_id" value="{{ post.post_id }}">
-                                    <a href="javascript:{}" onclick="document.getElementById('edit_post{{ post.post_id }}').submit()"><i class="bi bi-pencil-fill"></i></a>
+                                    <button onclick="document.getElementById('edit_post').submit()"><i class="bi bi-pencil-fill"></i></button>
                                 </form>
                                 {% endif %}
                             </div>
