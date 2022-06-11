@@ -347,7 +347,7 @@ def votes_history(request):
     if len(votes_raw) == 0:
         vote_history_context['no_votes'] = True
         return render(request, 'polls/vote_history.html', context=vote_history_context)
-    votes_paginator = Paginator(votes_raw, 2)
+    votes_paginator = Paginator(votes_raw, 5)
     page_no = request.GET.get('page')
     page_votes = votes_paginator.get_page(page_no)
     votes = list()
