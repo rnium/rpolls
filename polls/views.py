@@ -5,6 +5,7 @@ from forums.models import (ForumTopic, Post)
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+import os
 
 
 def homepageview(request):
@@ -278,6 +279,38 @@ def update_poll(request, pk):
             return renderError(request, "Poll Not Found")
         if poll.author != request.user or not request.user.is_staff:
             return renderError(request,'Access Denied')
+        choices_raw = poll.choice.all()
+        update_poll_context = dict()
+        update_poll_context['username'] = request.user.username
+        update_poll_context['recentpolls'] = get_polls_panel_context(request)
+        update_poll_context['forums'] = get_forum_panel_context(request)
+        update_poll_context['poll_id'] = poll.id
+        update_poll_context['poll_title'] = poll.title
+        update_poll_context['poll_is_public'] = poll.public
+        update_poll_context['poll_is_active'] = poll.active
+        update_poll_context['poll_banner_filename'] = os.path.basename(poll.banner.name)
+        update_poll_context['poll_banner_url'] = poll.banner.url
+        choices_list = []
+        for choice in choices_raw:
+            unit_context = dict()
+            unit_context['choice_id'] = choice.id
+            unit_context['choice_text'] = choice.choicetext
+            choices_list.append(unit_context)
+        update_poll_context['choices'] = choices_list
+        return render(request, 'polls/poll_update.html', context=update_poll_context)
+    else:
+        form_data = list(request.POST)
+        prev_choices_id = [i for i in form_data if i.isdigit()]
+        if len(prev_choices_id) > 0:
+            for choice_id in prev_choices_id:
+                try:
+                    choice = Choice.objects.get(pk=choice_id)
+                except Choice.DoesNotExist:
+                    return renderError(request, "Invalid Form")
+                choice.choicetext = request.POST.get(choice_id)
+                choice.save()
+        new_choices = [i for i in form_data if i.startswith('choice')]
+        return HttpResponse(new_choices)
 
 @login_required()
 def votes_history(request):
