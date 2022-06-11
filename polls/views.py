@@ -48,6 +48,7 @@ def get_polls_panel_context(request):
         recentpolls_context.append(unit_context)
     return recentpolls_context
 
+
 def renderError(request, error_msg):
     context = {}
     context['username'] = request.user.username
@@ -55,6 +56,7 @@ def renderError(request, error_msg):
     context['forums'] = get_forum_panel_context(request)
     context['error'] = error_msg
     return render(request, 'polls/error.html', context=context)
+
 
 @login_required()
 def pollshomepage(request):
@@ -379,6 +381,9 @@ def vote_now(request, pk):
         return renderError(request, 'Only Admins Can Access')
     if not poll.active:
         return renderError(request, 'Inactive Poll')
+    users_vote = poll.pollvote.filter(voter=request.user)
+    if len(users_vote) > 0:
+        return renderError(request, 'Already Voted')
     if request.method == 'GET':
         votes_context = dict()
         votes_context['recentpolls'] = get_polls_panel_context(request)
