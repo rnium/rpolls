@@ -374,26 +374,11 @@ def vote_now(request, pk):
     try:
         poll = Poll.objects.get(pk=pk)
     except Poll.DoesNotExist:
-        context = {}
-        context['recentpolls'] = get_polls_panel_context(request)
-        context['forums'] = get_forum_panel_context(request)
-        context['error'] = 'Poll Not Found'
-        context['username'] = request.user.username
-        return render(request, 'polls/error.html', context=context)
+        return renderError(request, 'Poll Not Found')
     if not poll.visible:
-        context = {}
-        context['recentpolls'] = get_polls_panel_context(request)
-        context['forums'] = get_forum_panel_context(request)
-        context['error'] = 'Only Admins Can Access'
-        context['username'] = request.user.username
-        return render(request, 'polls/error.html', context=context)
+        return renderError(request, 'Only Admins Can Access')
     if not poll.active:
-        context = {}
-        context['recentpolls'] = get_polls_panel_context(request)
-        context['forums'] = get_forum_panel_context(request)
-        context['error'] = 'Inactive Poll'
-        context['username'] = request.user.username
-        return render(request, 'polls/error.html', context=context)
+        return renderError(request, 'Inactive Poll')
     if request.method == 'GET':
         votes_context = dict()
         votes_context['recentpolls'] = get_polls_panel_context(request)
@@ -412,17 +397,11 @@ def vote_now(request, pk):
         votes_context['choices'] = choices
         return render(request, 'polls/votenow.html', context=votes_context)
     else:
-        
         choice_id = request.POST.get('vote')
         try:
             choice = Choice.objects.get(pk=choice_id)
         except Choice.DoesNotExist:
-            context = {}
-            context['recentpolls'] = get_polls_panel_context(request)
-            context['forums'] = get_forum_panel_context(request)
-            context['error'] = 'Invalid Choice'
-            context['username'] = request.user.username
-            return render(request, 'polls/error.html', context=context)
+            return renderError(request, 'Invalid Choice')
         new_vote = Vote.objects.create(choice=choice, poll=poll, voter=request.user)
         new_vote.save()
         return redirect('polls:polldetails', pk=poll.id)
