@@ -110,7 +110,7 @@
                             <ul class="choice-list">
                                 {% for choice in choices%}
                                 <li class="choice card-simple">
-                                    <div class="choice-text">{{ choice.choice_text }}</div>
+                                    <div {% if choice.is_voted %}class="choice-text voted"{% else %}class="choice-text"{% endif %}>{{ choice.choice_text }}</div>
                                     <div class="info">
                                         <div class="choice-votes me-2"><span class="label">votes:&nbsp;</span><span class='value'>{{ choice.choice_votes }}</span></div>
                                         <div class="progress">

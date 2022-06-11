@@ -197,8 +197,9 @@ def polldetail(request, pk):
             percentVotes = 0
         choice_votes_percent = round(percentVotes, 2)
         progressbar_progress = round(percentVotes)
+        is_voted = bool(choice.choicevote.filter(voter=request.user).count())
         unit_context = {'choice_text':choice_text, 'choice_votes':choice_votes, 'choice_votes_percent':choice_votes_percent,
-                        'progressbar_progress':progressbar_progress}
+                        'progressbar_progress':progressbar_progress, 'is_voted':is_voted}
         choices_context.append(unit_context)
     polldetail_context['choices'] = choices_context
     polldetail_context['total_votes'] = total_votes
