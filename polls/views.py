@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
+
 def homepageview(request):
     if request.user.is_authenticated:
         return redirect('polls:index')
@@ -46,6 +47,13 @@ def get_polls_panel_context(request):
         recentpolls_context.append(unit_context)
     return recentpolls_context
 
+def renderError(request, error_msg):
+    context = {}
+    context['username'] = request.user.username
+    context['recentpolls'] = get_polls_panel_context(request)
+    context['forums'] = get_forum_panel_context(request)
+    context['error'] = error_msg
+    return render(request, 'polls/error.html', context=context)
 
 @login_required()
 def pollshomepage(request):
@@ -260,6 +268,16 @@ def create_poll(request):
         confirm_page_context = {'username':username, 'recentpolls':polls_panel, 'forums':forums_panel, 'poll_id':new_poll.id, 'poll_link':poll_link}
         return render(request, 'polls/poll_creation_info.html', context=confirm_page_context)
 
+
+@login_required
+def update_poll(request, pk):
+    if request.method == 'GET':
+        try:
+            poll = Poll.objects.get(pk=pk)
+        except Poll.DoesNotExist:
+            return renderError(request, "Poll Not Found")
+        if poll.author != request.user or not request.user.is_staff:
+            return renderError(request,'Access Denied')
 
 @login_required()
 def votes_history(request):
