@@ -6,6 +6,7 @@ import datetime
 from polls.views import (get_polls_panel_context, get_forum_panel_context)
 from django.contrib.auth.decorators import login_required
 from polls.views import renderError
+from django.utils import timezone
 
 @login_required
 def forums_all(request):
@@ -72,11 +73,7 @@ def forumdetail(request, pk):
         unit_context['author'] = post.post_author
         unit_context['added'] = post.added
         unit_context['text'] = post.post_text
-        added = post.added.strftime("%H:%M:%S, %d %m, %Y")
-        updated = post.updated.strftime("%H:%M:%S, %d %m, %Y")
-        added_t = datetime.datetime.strptime(added,"%H:%M:%S, %d %m, %Y").time()
-        updated_t = datetime.datetime.strptime(updated,"%H:%M:%S, %d %m, %Y").time()
-        if added_t != updated_t:
+        if post.added != post.updated:
             unit_context['updated'] = post.updated
         if post.post_author == request.user:
             unit_context['own_post'] = True
@@ -114,8 +111,8 @@ def reply_to_forum(request, pk):
             username = request.user.username
             context = {'username':username, 'recentpolls': polls_panel_context, 'forums': forums_panel_context, 'error':'Topic Is Locked/Inactive'}
             return render(request, 'polls/error.html', context=context)
-            
-        post = Post.objects.create(post_text=reply_text, forum=forum_topic, post_author=request.user)
+        time_now = timezone.now()   
+        post = Post.objects.create(post_text=reply_text, forum=forum_topic, added=time_now, updated=time_now, post_author=request.user)
         post.save()
         return redirect('forums:forum_detail', pk=pk)
 
@@ -136,6 +133,9 @@ def forum_create(request):
         post_kwargs = dict()
         post_kwargs['post_text'] = request.POST.get('post-text')
         post_kwargs['forum'] = new_forum
+        time_now = timezone.now()
+        post_kwargs['added'] = time_now
+        post_kwargs['updated'] = time_now
         post_kwargs['post_author'] = request.user
         new_post = Post.objects.create(**post_kwargs)
         new_post.save()
@@ -221,6 +221,7 @@ def update_post(request):
         if not bool(new_post_text):
             return renderError(request, "No Input Text")
         post.post_text = new_post_text
+        post.updated = timezone.now()
         post.save()
         forum_pk = request.POST.get('forum_pk')
         return redirect('forums:forum_detail', pk=forum_pk)
