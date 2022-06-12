@@ -110,7 +110,7 @@
                         <div class="title">
                             <i class="bi bi-chat-square me-2"></i><a href="{% url 'forums:forum_detail' forum.forum_id %}">{{ forum.title }}</a>
                         </div>
-                        <div class="post-body">{{ forum.first_post_text|truncatechars:330 }}</div>
+                        <div class="post-body">{{ forum.first_post_text|striptags|truncatechars:330 }}</div>
                         <div class="stat">
                             <div class="views si">
                                 <span class="label"><i class="bi bi-eye me-1"></i>views:&nbsp;</span>

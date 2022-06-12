@@ -5,15 +5,7 @@ from django.core.paginator import Paginator
 import datetime
 from polls.views import (get_polls_panel_context, get_forum_panel_context)
 from django.contrib.auth.decorators import login_required
-
-
-def renderError(request, error_msg):
-    context = {}
-    context['username'] = request.user.username
-    context['recentpolls'] = get_polls_panel_context(request)
-    context['forums'] = get_forum_panel_context(request)
-    context['error'] = error_msg
-    return render(request, 'polls/error.html', context=context)
+from polls.views import renderError
 
 @login_required
 def forums_all(request):

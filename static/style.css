@@ -896,12 +896,16 @@ body .main-container .right-col .forum-detail .content .forum-post .post-body {
   margin-left: auto;
 }
 
-body .main-container .right-col .forum-detail .content .forum-post .post-body p {
+body .main-container .right-col .forum-detail .content .forum-post .post-body .content {
   margin: 0;
   padding: 10px 15px;
   border: 1px solid #d1d7dd;
   background-color: rgba(240, 248, 255, 0.3);
   border-radius: 10px;
+}
+
+body .main-container .right-col .forum-detail .content .forum-post .post-body .content p {
+  margin: 0;
 }
 
 body .main-container .right-col .forum-detail .content .forum-post .post-body .action {

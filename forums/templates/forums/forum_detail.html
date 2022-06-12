@@ -112,7 +112,7 @@
                             <div class="post-time">{{ post.added|date:"h:i A, j M o" }}</div>
                         </div>
                         <div class="post-body">
-                            <p>{{ post.text }}</p>
+                            <div class="content"><p>{{ post.text|striptags|linebreaks }}</p></div>
                             <div class="action">
                                 {% if post.updated %}<span class="last-edited"><i class="bi bi-arrow-clockwise"></i>last edited: {{ post.updated|date:"h:i:s A, j M o" }}</span>{% endif %}
                                 {% if post.own_post %}
