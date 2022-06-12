@@ -28,7 +28,6 @@ def forums_all(request):
         unit_context['views'] = forum.views
         unit_context['first_post_text'] = firstPost.post_text
         unit_context['num_replies'] = allPosts.count() - 1
-        unit_context['last_post_username'] = lastPost.post_author
         unit_context['last_post_time'] = forum.added
         forum_topics.append(unit_context)
     forums_all_context['forums'] = forum_topics
