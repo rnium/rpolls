@@ -63,7 +63,10 @@ def forumdetail(request, pk):
     forum_detail_context['edit_permit'] = (forum.author == request.user ) or request.user.is_staff
     forum_detail_context['topic_title'] = forum.title
     forum_detail_context['lock_status'] = forum.locked
-    forumPosts = forum.forumpost.all()
+    forumPosts_raw = forum.forumpost.all()
+    forum_paginator = Paginator(forumPosts_raw, 5)
+    page_no = request.GET.get('page')
+    forumPosts = forum_paginator.get_page(page_no)
     posts_context = []
     for post in forumPosts:
         unit_context = dict()
@@ -81,7 +84,15 @@ def forumdetail(request, pk):
             unit_context['post_id'] = post.id
         posts_context.append(unit_context)
     forum_detail_context['posts'] = posts_context
-
+    paginator_context = dict()
+    paginator_context['has_more_pages'] = forumPosts.has_previous() or forumPosts.has_next()
+    paginator_context['has_next'] = forumPosts.has_next()
+    paginator_context['has_previous'] = forumPosts.has_previous()
+    paginator_context['current_page'] = forumPosts.number
+    paginator_context['total_pages'] = forumPosts.paginator.num_pages
+    paginator_context['prev_page_num'] = forumPosts.previous_page_number
+    paginator_context['next_page_num'] = forumPosts.next_page_number
+    forum_detail_context['paginator'] = paginator_context
     return render(request, 'forums/forum_detail.html', context=forum_detail_context)
 
 
