@@ -10,5 +10,6 @@ urlpatterns = [
     path('deletepost/<int:pk>', views.delete_post, name="post_delete"),
     path('create/', views.forum_create, name="forum_create"),
     path('<int:pk>/', views.forumdetail, name="forum_detail"),
+    path('<int:pk>/edit', views.edit_forum, name="edit_forum"),
     path('<int:pk>/reply/', views.reply_to_forum, name="forum_reply"),
 ]

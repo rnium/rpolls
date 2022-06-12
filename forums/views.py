@@ -127,6 +127,44 @@ def forum_create(request):
 
 
 @login_required
+def edit_forum(request, pk):
+    if request.method == 'GET':
+        try:
+            forum = ForumTopic.objects.get(pk=pk)
+        except ForumTopic.DoesNotExist:
+            return renderError(request, "(404) Forum Not Found")
+        edit_permit = (request.user == forum.author) or request.user.is_staff
+        if not edit_permit:
+            return renderError(request, "(403) Access Denied")
+        if not forum.active:
+            return renderError(request, "Restricted Forum")
+        edit_forum_context = dict()
+        edit_forum_context['recentpolls'] = get_polls_panel_context(request)
+        edit_forum_context['forum_panel'] = get_forum_panel_context(request)
+        edit_forum_context['forum_id'] = forum.id
+        edit_forum_context['forum_title'] = forum.title
+        firstPost = forum.forumpost.all().order_by('added')[0]
+        edit_forum_context['post_text'] = firstPost.post_text
+        return render(request, 'forums/forum_edit.html', context=edit_forum_context)
+    else:
+        try:
+            forum = ForumTopic.objects.get(pk=pk)
+        except ForumTopic.DoesNotExist:
+            return renderError(request, "(404) Forum Not Found")
+        title = request.POST.get('topic')
+        post_text = request.POST.get('post-text')
+        if not bool(title) or not bool(post_text):
+            return renderError(request, "Empty Input Field")
+        forum.title = title
+        firstPost = forum.forumpost.all().order_by('added')[0]
+        firstPost.post_text = post_text
+        forum.save()
+        firstPost.save()
+        return redirect('forums:forum_detail', pk=pk)
+        
+    
+
+@login_required
 def edit_post(request):
     if request.method == 'GET':
         return redirect('forums:forum_all')
