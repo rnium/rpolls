@@ -126,6 +126,12 @@
   body .main-container .right-col .no_access .info p {
     font-size: 1rem !important;
   }
+  body .main-container .right-col .poll-detail .share-link a {
+    padding: 5px 10px !important;
+  }
+  body .main-container .right-col .poll-detail .share-link a, body .main-container .right-col .poll-detail .share-link button {
+    font-size: 14px;
+  }
   body .main-container .intro .banner img {
     height: auto !important;
     width: 90% !important;
