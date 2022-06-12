@@ -102,7 +102,7 @@
             <div class="forum-detail card">
                 <div class="heading">
                     <i class="bi bi-chat-right me-1"></i>
-                    <span class="title">{{ topic_title }}</span>
+                    <span class="title">{{ topic_title }}{% if edit_permit %}<a href="{% url 'forums:edit_forum' forum_id %}"><i class="bi bi-pencil-fill"></i></a>{% endif %}</span>
                 </div>
                 <div class="content">
                     {% for post in posts %}
@@ -112,7 +112,7 @@
                             <div class="post-time">{{ post.added|date:"h:i A, j M o" }}</div>
                         </div>
                         <div class="post-body">
-                            <div class="content"><p>{{ post.text|striptags|linebreaks }}</p></div>
+                            <div class="content"><p>{{ post.text|safe|linebreaks }}</p></div>
                             <div class="action">
                                 {% if post.updated %}<span class="last-edited"><i class="bi bi-arrow-clockwise"></i>last edited: {{ post.updated|date:"h:i:s A, j M o" }}</span>{% endif %}
                                 {% if post.own_post %}

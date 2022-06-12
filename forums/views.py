@@ -47,7 +47,12 @@ def forums_all(request):
 
 @login_required
 def forumdetail(request, pk):
-    forum = get_object_or_404(ForumTopic, pk=pk, active=True)
+    try:
+        forum = ForumTopic.objects.get(pk=pk)
+    except ForumTopic.DoesNotExist:
+        return renderError(request, '(404) Forum Not Found')
+    if not forum.active:
+        return renderError(request, '(403) Forum Restricted')
     forumViews = forum.views + 1
     ForumTopic.objects.filter(pk=pk).update(views=forumViews)
     forum_detail_context = dict()
@@ -55,6 +60,7 @@ def forumdetail(request, pk):
     forum_detail_context['recentpolls'] = get_polls_panel_context(request)
     forum_detail_context['username'] = request.user.username
     forum_detail_context['forum_id'] = forum.id
+    forum_detail_context['edit_permit'] = (forum.author == request.user ) or request.user.is_staff
     forum_detail_context['topic_title'] = forum.title
     forum_detail_context['lock_status'] = forum.locked
     forumPosts = forum.forumpost.all()
