@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from user.views import (register, userlogin, userlogout, unavailable)
+from user.views import (register, userlogin, userlogout, unavailable, feedback, report_issue)
 from polls.views import homepageview
 
 urlpatterns = [
@@ -30,8 +30,8 @@ urlpatterns = [
     path('logout/', userlogout, name='logout'),
     path('sourcecode/', unavailable, name='sourcecode'),
     path('rules/', unavailable, name='rules'),
-    path('issue/', unavailable, name='issue'),
-    path('feedback/', unavailable, name='feedback'),
+    path('issue/', report_issue, name='issue'),
+    path('feedback/', feedback, name='feedback'),
     path('about/', unavailable, name='about'),
 ]
 
