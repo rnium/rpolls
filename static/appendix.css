@@ -314,6 +314,7 @@ body footer .upper .vl {
 .btn-1 {
   background-color: inherit;
   text-decoration: none;
+  text-align: center;
   color: #049f9f;
   border: 2px solid #049f9f;
   padding: 0.2em 2em;
@@ -337,6 +338,7 @@ body footer .upper .vl {
   background-color: #049f9f;
   text-decoration: none;
   color: aliceblue;
+  text-align: center;
   border: 0;
   padding: 0.2em 2em;
   border-radius: 20px;
