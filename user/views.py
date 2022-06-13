@@ -59,3 +59,14 @@ def userlogout(request):
 def unavailable(request):
     logged_in = request.user.is_authenticated
     return render(request, 'user/unavailable.html', context={'logged_in': logged_in})
+
+
+def feedback(request):
+    pass
+
+
+def report_issue(request):
+    pass
+
+def about(request):
+    pass

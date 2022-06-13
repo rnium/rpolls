@@ -30,6 +30,9 @@ urlpatterns = [
     path('logout/', userlogout, name='logout'),
     path('sourcecode/', unavailable, name='sourcecode'),
     path('rules/', unavailable, name='rules'),
+    path('issue/', unavailable, name='issue'),
+    path('feedback/', unavailable, name='feedback'),
+    path('about/', unavailable, name='about'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
