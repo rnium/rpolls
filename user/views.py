@@ -100,5 +100,16 @@ def report_issue(request):
         context['response'] = "Issue Submitted"
         return render(request, 'user/message_response.html', context=context)
 
+
 def about(request):
     pass
+    #Todo: complete about
+
+def handler404(request, exception):
+    context = {}
+    context['logged_in'] = request.user.is_authenticated
+    if request.user.is_authenticated:
+        context['username'] = request.user.username
+    response = render(request, 'user/notfound404.html', context=context)
+    response.status_code = 404
+    return response
